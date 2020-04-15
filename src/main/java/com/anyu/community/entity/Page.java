@@ -5,17 +5,17 @@ import org.hibernate.validator.constraints.Range;
 import javax.validation.constraints.Min;
 
 /**
- *用于分页的组件
+ * 用于分页的组件
  */
 public class Page {
     //当前页码
-    @Min(value = 1,message = "current >= 1")
-    private int current=1;
+    @Min(value = 1, message = "current >= 1")
+    private int current = 1;
     //每页数据量
-    @Range(max = 100,min = 10,message = "100>=limit=>10")
-    private int limit=10;
+    @Range(max = 100, min = 10, message = "100>=limit=>10")
+    private int limit = 10;
     //总数据
-    @Min(value = 0,message = "row >= 0")
+    @Min(value = 0, message = "row >= 0")
     private int rows;
     //查询路径(用于复用分页链接)
     private String path;
@@ -54,38 +54,42 @@ public class Page {
 
     /**
      * 获取当前页起始行
+     *
      * @return 行数
      */
-    public int getOffSet(){
-        return (current-1)*limit;
+    public int getOffSet() {
+        return (current - 1) * limit;
     }
 
     /**
      * 获取总的页数
+     *
      * @return
      */
-    public int getTotal(){
+    public int getTotal() {
         if (rows % limit == 0)
-            return rows/limit;
+            return rows / limit;
         else
-            return rows/limit+1;
+            return rows / limit + 1;
     }
 
     /**
-     *获取起始页码
+     * 获取起始页码
+     *
      * @return
      */
-    public int getFrom(){
-       int from=current-2;
-       return from < 1 ? 1 : from;
+    public int getFrom() {
+        int from = current - 2;
+        return from < 1 ? 1 : from;
     }
 
     /**
-     *获取终止页
+     * 获取终止页
+     *
      * @return
      */
-    public int getTo(){
-        int to=current+2;
+    public int getTo() {
+        int to = current + 2;
         return to > getTotal() ? getTotal() : to;
     }
 }

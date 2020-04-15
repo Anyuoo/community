@@ -11,9 +11,10 @@ import java.util.List;
 public class DiscussPostServiceImpl implements DiscussPostServicce {
     @Autowired
     private BasedClass basedClass;
+
     @Override
     public List<DiscussPost> findDiscussPosts(int userId, int offset, int limit) {
-        return basedClass.discussPostMapper.selectDiscussPost(userId,offset,limit);
+        return basedClass.discussPostMapper.selectDiscussPost(userId, offset, limit);
     }
 
     @Override

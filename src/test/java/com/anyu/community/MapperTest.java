@@ -18,31 +18,35 @@ public class MapperTest {
     private UserMapper userMapper;
     @Autowired
     private DiscussPostMapper discussPostMapper;
+
     @Test
-    void select(){
+    void select() {
         System.out.println(userMapper.selectById(101));
         System.out.println(userMapper.selectByEmail("nowcoder103@sina.com"));
         System.out.println(userMapper.selectByName("liubei"));
     }
+
     @Test
-    void insert(){
-        User user=new User();
+    void insert() {
+        User user = new User();
         user.setUsername("popo");
         userMapper.insertUser(user);
     }
+
     @Test
-    void update(){
-        userMapper.updateEmail(150,"2010@qq.com");
-        userMapper.updateHeaderUrl(150,"http://images.nowcoder.com/head/149t.png");
-        userMapper.updatePassword(150,"123456");
-        userMapper.updateStatus(150,1);
+    void update() {
+        userMapper.updateEmail(150, "2010@qq.com");
+        userMapper.updateHeaderUrl(150, "http://images.nowcoder.com/head/149t.png");
+        userMapper.updatePassword(150, "123456");
+        userMapper.updateStatus(150, 1);
     }
+
     @Test
-    void dicussmapper(){
-        List<DiscussPost> list=discussPostMapper.selectDiscussPost(0,0,10);
+    void dicussmapper() {
+        List<DiscussPost> list = discussPostMapper.selectDiscussPost(0, 0, 10);
         System.out.println(discussPostMapper.selectDiscussPostRows(0));
         for (DiscussPost d : list
-             ) {
+        ) {
             System.out.println(d);
         }
     }

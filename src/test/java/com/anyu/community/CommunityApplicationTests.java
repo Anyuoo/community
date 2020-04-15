@@ -12,6 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 class CommunityApplicationTests {
     @Autowired
     private UserMapper userMapper;
+
     @Test
     void contextLoads() {
         System.out.println(userMapper.selectById(101));

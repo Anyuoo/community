@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Header</title>
+</head>
+<body>
+<header class="bg-dark sticky-top" th:fragment="header">
+    <div class="container">
+        <!-- 导航 -->
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <!-- logo -->
+            <a class="navbar-brand" th:href="@{/index}"></a>
+            <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
+                    class="navbar-toggler" data-target="#navbarSupportedContent"
+                    data-toggle="collapse" type="button">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <!-- 功能 -->
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item ml-3 btn-group-vertical">
+                        <a class="nav-link" th:href="@{/index}">首页</a>
+                    </li>
+                    <li class="nav-item ml-3 btn-group-vertical">
+                        <a class="nav-link position-relative" th:href="@{/letter}">消息<span
+                                class="badge badge-danger">12</span></a>
+                    </li>
+                    <li class="nav-item ml-3 btn-group-vertical">
+                        <a class="nav-link" th:href="@{/register}">注册</a>
+                    </li>
+                    <li class="nav-item ml-3 btn-group-vertical">
+                        <a class="nav-link" th:href="@{/login}">登录</a>
+                    </li>
+                    <li class="nav-item ml-3 btn-group-vertical dropdown">
+                        <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle"
+                           data-toggle="dropdown"
+                           href="#" id="navbarDropdown" role="button">
+                            <img class="rounded-circle" src="http://images.nowcoder.com/head/1t.png"
+                                 style="width:30px;"/>
+                        </a>
+                        <div aria-labelledby="navbarDropdown" class="dropdown-menu">
+                            <a class="dropdown-item text-center" href="site/profile.html">个人主页</a>
+                            <a class="dropdown-item text-center" href="site/setting.html">账号设置</a>
+                            <a class="dropdown-item text-center" href="site/login.html">退出登录</a>
+                            <div class="dropdown-divider"></div>
+                            <span class="dropdown-item text-center text-secondary">nowcoder</span>
+                        </div>
+                    </li>
+                </ul>
+                <!-- 搜索 -->
+                <form action="site/search.html" class="form-inline my-2 my-lg-0">
+                    <input aria-label="Search" class="form-control mr-sm-2" type="search"/>
+                    <button class="btn btn-outline-light my-2 my-sm-0" type="submit">搜索</button>
+                </form>
+            </div>
+        </nav>
+    </div>
+</header>
+</body>
+</html>

@@ -23,13 +23,12 @@ public class HomePageController {
     @Autowired
     private DiscussPostServicce discussPostServicce;
 
-    @GetMapping(value = {"/index", "/"})
+    @GetMapping("/index")
     public String getIndexPage(Model model, @Validated Page page) {
         //方法调用前SPRINGmvc自动实例化参数对象，并注入
         page.setPath("/index");
         page.setRows(discussPostServicce.findDiscussPostRows(0));
-
-        List<DiscussPost> posts = discussPostServicce.findDiscussPosts(0, 0, 10);
+        List<DiscussPost> posts = discussPostServicce.findDiscussPosts(0, page.getOffSet(), 10);
         List<Map<String, Object>> postAndUser = new ArrayList<>();
         if (!posts.isEmpty()) {
             for (DiscussPost post : posts) {

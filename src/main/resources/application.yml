@@ -7,15 +7,23 @@ server:
 spring:
   #ThymeleafProperties
   thymeleaf:
-    cache: false #¹Ø±Õ»º´æ
+    cache: false
 
-  #Êı¾İÔ´ÅäÖÃ
+  #æ•°æ®æº
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://localhost:3306/community?useUnicode=true&characterEncoding=utf-8&useSSL=false
     username: root
     password: 123321abc.
     type: com.alibaba.druid.pool.DruidDataSource
+
+  #mailé‚®ç®±é…ç½®
+  mail:
+    host: smtp.qq.com
+    port: 465
+    username: anyuzhao@qq.com
+    password: zngjtedtoxzhdfca
+    protocol: smtps
 
 mybatis:
   type-aliases-package: com.anyu.community.entity
@@ -24,3 +32,7 @@ mybatis:
     use-generated-keys: true
     map-underscore-to-camel-case: true
 
+#community
+community:
+  path:
+    domain: http://localhost:8080

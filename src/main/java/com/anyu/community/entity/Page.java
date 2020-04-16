@@ -8,12 +8,16 @@ import javax.validation.constraints.Min;
  * 用于分页的组件
  */
 public class Page {
+    //默认当前页码
+    private static final int DEFAULT_CURRENT = 1;
+    //默认一页数据量
+    private static final int DEFAULT_LIMIT = 10;
     //当前页码
     @Min(value = 1, message = "current >= 1")
-    private int current = 1;
+    private int current = DEFAULT_CURRENT;
     //每页数据量
     @Range(max = 100, min = 10, message = "100>=limit=>10")
-    private int limit = 10;
+    private int limit = DEFAULT_LIMIT;
     //总数据
     @Min(value = 0, message = "row >= 0")
     private int rows;
@@ -54,7 +58,6 @@ public class Page {
 
     /**
      * 获取当前页起始行
-     *
      * @return 行数
      */
     public int getOffSet() {

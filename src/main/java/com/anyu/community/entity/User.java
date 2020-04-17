@@ -1,12 +1,26 @@
 package com.anyu.community.entity;
 
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 public class User {
     private int id;
+
+    @NotBlank(message = "{user.username.notBlank}")
+    @Length(max = 8, message = "{user.username.length}")
     private String username;
+
+    @NotBlank(message = "{user.password.notBlank}")
+    @Length(min = 6, max = 15, message = "{user.password.length}")
     private String password;
+
     private String salt;
+
+    @NotBlank(message = "{user.email.notBlank}")
+    @Email(message = "{user.email.format}")
     private String email;
     private int type;
     private int status;

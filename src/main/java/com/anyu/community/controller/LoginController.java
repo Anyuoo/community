@@ -6,6 +6,9 @@ import com.anyu.community.utils.CommunityConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,18 +42,32 @@ public class LoginController implements CommunityConstant {
         return PREFIX + "register";
     }
 
+    /**
+     * @param model
+     * @param user
+     * @param result s数据验证不合法信息
+     * @return
+     */
     @PostMapping("/register")
-    public String register(Model model, User user) {
-        Map<String, Object> map = userService.register(user);
-        if (map.isEmpty()) {
-            model.addAttribute("msg", "注册成功，我们已经向您的邮箱发送了激活邮件，请尽快激活！");
-            model.addAttribute("target", "/index");
-            return PREFIX + "operate-result";
+    public String register(Model model, @Validated User user, BindingResult result) {
+        //user数据不合法
+        if (result.hasErrors()) {
+            for (FieldError error : result.getFieldErrors()) {
+                model.addAttribute(error.getField() + "Msg", error.getDefaultMessage());
+            }
+            return PREFIX + "register";
         }
-        model.addAttribute("usernameMsg", map.get("usernameMsg"));
-        model.addAttribute("passwordMsg", map.get("passwordMsg"));
-        model.addAttribute("emailMsg", map.get("emailMsg"));
-        return PREFIX + "register";
+        //用户存在
+        Map<String, Object> map = userService.register(user);
+        if (!map.isEmpty()) {
+            model.addAttribute("usernameMsg", map.get("usernameMsg"));
+            model.addAttribute("emailMsg", map.get("emailMsg"));
+            return PREFIX + "register";
+        }
+        //成功注册
+        model.addAttribute("msg", "注册成功，我们已经向您的邮箱发送了激活邮件，请尽快激活！");
+        model.addAttribute("target", "/index");
+        return PREFIX + "operate-result";
     }
 
     /**

@@ -5,7 +5,6 @@ import com.anyu.community.service.UserService;
 import com.anyu.community.utils.CommunityConstant;
 import com.anyu.community.utils.CommunityUtil;
 import com.anyu.community.utils.MailClient;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -39,22 +38,9 @@ public class UserServiceImpl extends BasedClass implements UserService, Communit
 
     @Override
     public Map<String, Object> register(User user) {
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>(1);
         if (user == null)
             throw new IllegalArgumentException("参数不能为空");
-        if (StringUtils.isBlank(user.getUsername())) {
-            map.put("usernameMsg", "用户名不能为空");
-            return map;
-
-        }
-        if (StringUtils.isBlank(user.getUsername())) {
-            map.put("passwordMsg", "密码不能为空");
-            return map;
-        }
-        if (StringUtils.isBlank(user.getEmail())) {
-            map.put("emailMsg", "Email不能为空");
-            return map;
-        }
         //验证账号
         User u = userMapper.selectByName(user.getUsername());
         if (u != null) {

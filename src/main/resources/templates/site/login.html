@@ -6,26 +6,27 @@
     <link href="https://static.nowcoder.com/images/logo_87_87.png" rel="icon"/>
     <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           rel="stylesheet">
-    <link rel="stylesheet}" th:href="@{/css/global.css}"/>
+    <link rel="stylesheet" th:href="@{/css/global.css}"/>
     <link rel="stylesheet" th:href="@{/css/login.css}"/>
     <title>牛客网-登录</title>
 </head>
 <body>
 <div class="nk-container">
     <!-- 头部 -->
-    <header th:replace="~{/commons/common-header :: header}"></header>
+    <header th:replace="~{/commons/common-header::header}"></header>
 
     <!-- 内容 -->
     <div class="main">
         <div class="container pl-5 pr-5 pt-3 pb-3 mt-3 mb-3">
             <h3 class="text-center text-info border-bottom pb-3">登&nbsp;&nbsp;录</h3>
-            <form class="mt-5">
+            <form class="mt-5" method="post" th:action="@{/login}">
                 <div class="form-group row">
                     <label class="col-sm-2 col-form-label text-right" for="username">账号:</label>
                     <div class="col-sm-10">
-                        <input class="form-control is-invalid" id="username" placeholder="请输入您的账号!" required
-                               type="text">
-                        <div class="invalid-feedback">
+                        <input id="username" name="username" placeholder="请输入您的账号!" required
+                               th:class="|form-control ${usernameLoginMsg == null ? '' : 'is-invalid'} |"
+                               th:value="${user == null ? '' :user.username}" type="text">
+                        <div class="invalid-feedback" th:text="${usernameLoginMsg}">
                             该账号不存在!
                         </div>
                     </div>
@@ -33,9 +34,10 @@
                 <div class="form-group row mt-4">
                     <label class="col-sm-2 col-form-label text-right" for="password">密码:</label>
                     <div class="col-sm-10">
-                        <input class="form-control is-invalid" id="password" placeholder="请输入您的密码!" required
-                               type="password">
-                        <div class="invalid-feedback">
+                        <input id="password" name="password" placeholder="请输入您的密码!" required
+                               th:class="|form-control ${passwordLoginMsg == null ? '' : 'is-invalid'} |"
+                               th:value="${user == null ? '' :user.password}" type="password">
+                        <div class="invalid-feedback" th:text="${passwordLoginMsg}">
                             密码长度不能小于8位!
                         </div>
                     </div>
@@ -43,20 +45,21 @@
                 <div class="form-group row mt-4">
                     <label class="col-sm-2 col-form-label text-right" for="verifycode">验证码:</label>
                     <div class="col-sm-6">
-                        <input class="form-control is-invalid" id="verifycode" placeholder="请输入验证码!" type="text">
+                        <input id="verifycode" name="code" placeholder="请输入验证码!"
+                               th:class="|form-control ${kaptchaMsg == null ? '' : 'is-invalid'} |" type="text">
                         <div class="invalid-feedback">
                             验证码不正确!
                         </div>
                     </div>
                     <div class="col-sm-4">
-                        <img class="mr-2" style="width:100px;height:40px;" th:src="@{/img/captcha.png}"/>
-                        <a class="font-size-12 align-bottom" href="javascript:">刷新验证码</a>
+                        <img class="mr-2" id="kaptcha" style="width:100px;height:40px;" th:src="@{/kaptcha}"/>
+                        <a class="font-size-12 align-bottom" href="javascript: refresh_kaptcha();">刷新验证码</a>
                     </div>
                 </div>
                 <div class="form-group row mt-4">
                     <div class="col-sm-2"></div>
                     <div class="col-sm-10">
-                        <input checked="checked" id="remember-me" type="checkbox">
+                        <input id="remember-me" name="remembered" th:checked="${param.remembered}" type="checkbox">
                         <label class="form-check-label" for="remember-me">记住我</label>
                         <a class="text-danger float-right" href="forget.html">忘记密码?</a>
                     </div>
@@ -72,12 +75,19 @@
     </div>
 
     <!-- 尾部 -->
-    <footer th:replace="~{/commons/common-footer :: footer}"></footer>
+    <footer th:replace="~{/commons/common-footer::footer}"></footer>
+
 </div>
 <script crossorigin="anonymous" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script crossorigin="anonymous"
         src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script crossorigin="anonymous" src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <script th:src="@{/js/global.js}"></script>
+<script>
+    function refresh_kaptcha() {
+        var path = CONTEXT_PATH + "/kaptcha?p=" + Math.random();
+        $("#kaptcha").attr("src", path);
+    }
+</script>
 </body>
 </html>

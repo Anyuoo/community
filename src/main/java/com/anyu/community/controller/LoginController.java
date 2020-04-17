@@ -3,46 +3,112 @@ package com.anyu.community.controller;
 import com.anyu.community.entity.User;
 import com.anyu.community.service.UserService;
 import com.anyu.community.utils.CommunityConstant;
+import com.google.code.kaptcha.Producer;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.imageio.ImageIO;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Map;
 
 @Controller
 public class LoginController implements CommunityConstant {
-    private final static String PREFIX = "site/";
+    private final static Logger logger = LoggerFactory.getLogger(LoginController.class);
+    private final String PREFIX = "site/";
+
     @Autowired
     private UserService userService;
+    @Autowired
+    private Producer producer;
+
+    @Value("${server.servlet.context-path}")
+    private String contextPath;
 
     @GetMapping("/login")
     public String getLoginPage() {
         return PREFIX + "login";
     }
 
-    @PostMapping("/login")
-    public String login(Model model, User user) {
-
-        return "index";
-    }
-
     /**
-     * 注册
+     * 用户登录
      *
+     * @param user       传入的user
+     * @param result     数据效验结果集
+     * @param code       输入的验证码
+     * @param remembered 是否勾选记住我
+     * @param model
+     * @param session
+     * @param response
      * @return
      */
+    @PostMapping("/login")
+    public String login(@Validated User user, BindingResult result, String code, boolean remembered, Model model, HttpSession session, HttpServletResponse response) {
+        //输入的user数据不合法
+        if (result.hasFieldErrors("username")) {
+            model.addAttribute("usernameLoginMsg", result.getFieldError("username").getDefaultMessage());
+            return PREFIX + "login";
+        }
+        if (result.hasFieldErrors("password")) {
+            model.addAttribute("passwordLoginMsg", result.getFieldError("password").getDefaultMessage());
+            return PREFIX + "login";
+        }
+
+        //验证码是否正确
+        String currentCode = (String) session.getAttribute("kaptcha");
+        if (StringUtils.isBlank(currentCode) || !currentCode.equalsIgnoreCase(code)) {
+            model.addAttribute("kaptchaMsg", "验证码错误");
+            return PREFIX + "login";
+        }
+
+        //是否勾选记住
+        int expiredSeconds = remembered ? REMEMBER_EXPIRED_SECOND : DEFAULT_EXPIRED_SECOND;
+        Map<String, Object> map = userService.login(user.getUsername(), user.getPassword(), expiredSeconds);
+
+        //检查账号是否存在，和激活
+        if (map.containsKey("ticket")) {
+            Cookie cookie = new Cookie("ticket", map.get("ticket").toString());
+            cookie.setPath(contextPath);
+            cookie.setMaxAge(expiredSeconds);
+            response.addCookie(cookie);
+            return "redirect:/index";
+        } else {
+            model.addAttribute("usernameLoginMsg", map.get("usernameLoginMsg"));
+            model.addAttribute("passwordLoginMsg", map.get("passwordLoginMsg"));
+            return PREFIX + "login";
+        }
+    }
+
+    @GetMapping("/logout")
+    public String logout(@CookieValue("ticket") String ticket) {
+        userService.logout(ticket);
+        return "redirect:/index";
+    }
+
     @GetMapping("/register")
     public String getRegisterPage() {
         return PREFIX + "register";
     }
 
     /**
+     * 注册
+     *
      * @param model
      * @param user
      * @param result s数据验证不合法信息
@@ -77,9 +143,9 @@ public class LoginController implements CommunityConstant {
      * @param code
      * @param model
      * @return
+     * http://localhost:8080/community/activation/userId/code
+     * http://localhost:8080/community/activation/168/417ab9e8903747afbd51cfa9e46447b0
      */
-    //http://localhost:8080/community/activation/userId/code
-    //http://localhost:8080/community/activation/168/417ab9e8903747afbd51cfa9e46447b0
     @GetMapping("/activation/{userId}/{code}")
     public String activate(@PathVariable("userId") int userId, @PathVariable("code") String code, Model model) {
         int status = userService.activation(userId, code);
@@ -94,5 +160,29 @@ public class LoginController implements CommunityConstant {
             model.addAttribute("target", "/index");
         }
         return PREFIX + "operate-result";
+    }
+
+    /**
+     * 二维码生成和更新
+     *
+     * @param session
+     * @param response
+     */
+    @GetMapping("/kaptcha")
+    public void kaptcha(HttpSession session, HttpServletResponse response) {
+        //生成二维码字符和图片
+        String text = producer.createText();
+        BufferedImage image = producer.createImage(text);
+        //将验证码存入session
+        session.setAttribute("kaptcha", text);
+        //将图片发送至浏览器
+        response.setContentType("image/png");
+        try {
+            OutputStream os = response.getOutputStream();
+            ImageIO.write(image, "png", os);
+        } catch (IOException e) {
+            logger.error("二维码生成失败", e.getMessage());
+        }
+
     }
 }

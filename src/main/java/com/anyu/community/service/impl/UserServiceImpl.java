@@ -1,5 +1,6 @@
 package com.anyu.community.service.impl;
 
+import com.anyu.community.entity.LoginTicket;
 import com.anyu.community.entity.User;
 import com.anyu.community.service.UserService;
 import com.anyu.community.utils.CommunityConstant;
@@ -31,11 +32,23 @@ public class UserServiceImpl extends BasedClass implements UserService, Communit
     @Value("${server.servlet.context-path}")
     private String contextPath;
 
+    /**
+     * 查找用户
+     *
+     * @param id
+     * @return
+     */
     @Override
     public User findUserById(int id) {
         return userMapper.selectById(id);
     }
 
+    /**
+     * 用户注册
+     *
+     * @param user
+     * @return
+     */
     @Override
     public Map<String, Object> register(User user) {
         Map<String, Object> map = new HashMap<>(1);
@@ -73,9 +86,9 @@ public class UserServiceImpl extends BasedClass implements UserService, Communit
         return map;
     }
 
+
     /**
      * 邮箱激活
-     *
      * @param userId
      * @param code
      * @return
@@ -93,36 +106,51 @@ public class UserServiceImpl extends BasedClass implements UserService, Communit
         }
     }
 
-
+    /**
+     * 登录
+     *
+     * @param username
+     * @param password
+     * @param expiredSeconds
+     * @return
+     */
     @Override
-    public User findUserByName(String username) {
-        return userMapper.selectByName(username);
+    public Map<String, Object> login(String username, String password, int expiredSeconds) {
+        Map<String, Object> map = new HashMap<>(1);
+        User user = userMapper.selectByName(username);
+        if (user == null) {
+            map.put("usernameLoginMsg", "用户不存在");
+            return map;
+        }
+        if (user.getStatus() == 0) {
+            map.put("usernameLoginMsg", "账号未激活");
+            return map;
+        }
+        String pw = CommunityUtil.md5(password + user.getSalt());
+        //密码是否正确
+        if (!user.getPassword().equals(pw)) {
+            map.put("passwordLoginMsg", "密码错误");
+            return map;
+        }
+        //生成登录凭证
+        LoginTicket loginTicket = new LoginTicket();
+        loginTicket.setUserId(user.getId());
+        String ticket = CommunityUtil.generateUUID();
+        loginTicket.setTicket(ticket);
+        loginTicket.setExpired(new Date(System.currentTimeMillis() + expiredSeconds * 1000));
+        loginTicket.setStatus(0);
+        loginTicketMapper.insertLoginTicket(loginTicket);
+        map.put("ticket", ticket);
+        return map;
     }
 
+    /**
+     * 注销登录
+     *
+     * @param ticket
+     */
     @Override
-    public User findUserByEmail(String email) {
-        return userMapper.selectByEmail(email);
-    }
-
-
-
-    @Override
-    public int updateUserStatus(int id, int status) {
-        return userMapper.updateStatus(id, status);
-    }
-
-    @Override
-    public int updateUserHeaderUrl(int id, String headerUrl) {
-        return userMapper.updateHeaderUrl(id, headerUrl);
-    }
-
-    @Override
-    public int updateUserPassword(int id, String password) {
-        return userMapper.updatePassword(id, password);
-    }
-
-    @Override
-    public int updateUserEmail(int id, String email) {
-        return userMapper.updateEmail(id, email);
+    public void logout(String ticket) {
+        loginTicketMapper.updateStatus(ticket,1);
     }
 }

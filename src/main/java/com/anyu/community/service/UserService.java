@@ -11,15 +11,8 @@ public interface UserService {
 
     int activation(int userId, String code);
 
-    User findUserByName(String username);
+    Map<String, Object> login(String username, String password, int expiredSeconds);
 
-    User findUserByEmail(String email);
+    void logout(String ticket);
 
-    int updateUserStatus(int id, int status);
-
-    int updateUserHeaderUrl(int id, String headerUrl);
-
-    int updateUserPassword(int id, String password);
-
-    int updateUserEmail(int id, String email);
 }

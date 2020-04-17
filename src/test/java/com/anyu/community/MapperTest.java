@@ -1,14 +1,17 @@
 package com.anyu.community;
 
 import com.anyu.community.entity.DiscussPost;
+import com.anyu.community.entity.LoginTicket;
 import com.anyu.community.entity.User;
 import com.anyu.community.mapper.DiscussPostMapper;
+import com.anyu.community.mapper.LoginTicketMapper;
 import com.anyu.community.mapper.UserMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 
+import java.util.Date;
 import java.util.List;
 
 @SpringBootTest
@@ -18,6 +21,21 @@ public class MapperTest {
     private UserMapper userMapper;
     @Autowired
     private DiscussPostMapper discussPostMapper;
+    @Autowired
+    private LoginTicketMapper loginTicketMapper;
+
+    @Test
+    void loginTicket() {
+        LoginTicket loginTicket = new LoginTicket();
+        loginTicket.setExpired(new Date());
+        loginTicket.setStatus(1);
+        loginTicket.setTicket("1222333");
+        loginTicket.setUserId(123);
+        loginTicketMapper.insertLoginTicket(loginTicket);
+        loginTicketMapper.updateStatus("1222333", 0);
+        System.out.println(loginTicketMapper.selectLoginTicketByTicket("1222333"));
+
+    }
 
     @Test
     void select() {

@@ -1,5 +1,6 @@
 package com.anyu.community.service;
 
+import com.anyu.community.entity.LoginTicket;
 import com.anyu.community.entity.User;
 
 import java.util.Map;
@@ -14,5 +15,11 @@ public interface UserService {
     Map<String, Object> login(String username, String password, int expiredSeconds);
 
     void logout(String ticket);
+
+    LoginTicket findLoginTicket(String ticket);
+
+    int updateUserHeaderUrl(int userId, String headerUrl);
+
+    boolean updateUserPassword(String oldPassword, String newPassword);
 
 }

@@ -23,7 +23,7 @@ public class HomePageController {
     @Autowired
     private DiscussPostServicce discussPostServicce;
 
-    @GetMapping("/index")
+    @GetMapping({"/index", "/"})
     public String getIndexPage(Model model, @Validated Page page) {
         //方法调用前SPRINGmvc自动实例化参数对象，并注入
         page.setPath("/index");

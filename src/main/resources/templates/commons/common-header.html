@@ -22,29 +22,29 @@
                     <li class="nav-item ml-3 btn-group-vertical">
                         <a class="nav-link" th:href="@{/index}">首页</a>
                     </li>
-                    <li class="nav-item ml-3 btn-group-vertical">
+                    <li class="nav-item ml-3 btn-group-vertical" th:if="${loginUser != null}">
                         <a class="nav-link position-relative" th:href="@{/letter}">消息<span
                                 class="badge badge-danger">12</span></a>
                     </li>
-                    <li class="nav-item ml-3 btn-group-vertical">
+                    <li class="nav-item ml-3 btn-group-vertical" th:if="${loginUser == null}">
                         <a class="nav-link" th:href="@{/register}">注册</a>
                     </li>
-                    <li class="nav-item ml-3 btn-group-vertical">
-                        <a class="nav-link" th:href="@{/login}">登录</a>
+                    <li class="nav-item ml-3 btn-group-vertical" th:if="${loginUser == null}">
+                        <a class="nav-link" th:href="@{/requiredLogin}">登录</a>
                     </li>
-                    <li class="nav-item ml-3 btn-group-vertical dropdown">
+                    <li class="nav-item ml-3 btn-group-vertical dropdown" th:if="${loginUser != null}">
                         <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle"
                            data-toggle="dropdown"
                            href="#" id="navbarDropdown" role="button">
-                            <img class="rounded-circle" src="http://images.nowcoder.com/head/1t.png"
-                                 style="width:30px;"/>
+                            <img class="rounded-circle" style="width:30px;"
+                                 th:src="${loginUser.headerUrl}"/>
                         </a>
-                        <div aria-labelledby="navbarDropdown" class="dropdown-menu">
+                        <div aria-labelledby="navbarDropdown" class="dropdown-menu" th:if="${loginUser != null}">
                             <a class="dropdown-item text-center" href="site/profile.html">个人主页</a>
-                            <a class="dropdown-item text-center" href="site/setting.html">账号设置</a>
+                            <a class="dropdown-item text-center" th:href="@{/user/setting}">账号设置</a>
                             <a class="dropdown-item text-center" th:href="@{/logout}">退出登录</a>
                             <div class="dropdown-divider"></div>
-                            <span class="dropdown-item text-center text-secondary">nowcoder</span>
+                            <span class="dropdown-item text-center text-secondary" th:utext="${loginUser.username}">nowcoder</span>
                         </div>
                     </li>
                 </ul>

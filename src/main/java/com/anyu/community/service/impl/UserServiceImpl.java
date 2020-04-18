@@ -89,6 +89,7 @@ public class UserServiceImpl extends BasedClass implements UserService, Communit
 
     /**
      * 邮箱激活
+     *
      * @param userId
      * @param code
      * @return
@@ -151,6 +152,47 @@ public class UserServiceImpl extends BasedClass implements UserService, Communit
      */
     @Override
     public void logout(String ticket) {
-        loginTicketMapper.updateStatus(ticket,1);
+        loginTicketMapper.updateStatus(ticket, 1);
+    }
+
+    /**
+     * 查询LoginTicket
+     *
+     * @param ticket
+     * @return
+     */
+    @Override
+    public LoginTicket findLoginTicket(String ticket) {
+        return loginTicketMapper.selectLoginTicketByTicket(ticket);
+    }
+
+    /**
+     * 更新头像
+     *
+     * @param userId
+     * @param headerUrl
+     * @return
+     */
+    @Override
+    public int updateUserHeaderUrl(int userId, String headerUrl) {
+        return userMapper.updateHeaderUrl(userId, headerUrl);
+    }
+
+    /**
+     * 更新密码
+     *
+     * @param oldPassword
+     * @param newPassword
+     * @return
+     */
+    @Override
+    public boolean updateUserPassword(String oldPassword, String newPassword) {
+        User user = hostHolder.getUser();
+        oldPassword = CommunityUtil.md5(oldPassword + user.getSalt());
+        if (!oldPassword.equals(user.getPassword()))
+            return false;
+        newPassword = CommunityUtil.md5(newPassword + user.getSalt());
+        userMapper.updatePassword(user.getId(), newPassword);
+        return true;
     }
 }

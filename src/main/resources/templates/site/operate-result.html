@@ -36,7 +36,7 @@
                             <a class="nav-link" href="register.html">注册</a>
                         </li>
                         <li class="nav-item ml-3 btn-group-vertical">
-                            <a class="nav-link" href="login.html">登录</a>
+                            <a class="nav-link" href="requiredLogin.html">登录</a>
                         </li>
                         <li class="nav-item ml-3 btn-group-vertical dropdown">
                             <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle"
@@ -48,7 +48,7 @@
                             <div aria-labelledby="navbarDropdown" class="dropdown-menu">
                                 <a class="dropdown-item text-center" href="profile.html">个人主页</a>
                                 <a class="dropdown-item text-center" href="setting.html">账号设置</a>
-                                <a class="dropdown-item text-center" href="login.html">退出登录</a>
+                                <a class="dropdown-item text-center" href="requiredLogin.html">退出登录</a>
                                 <div class="dropdown-divider"></div>
                                 <span class="dropdown-item text-center text-secondary">nowcoder</span>
                             </div>
@@ -72,7 +72,8 @@
                 <hr class="my-4">
                 <p>
                     系统会在 <span class="text-danger" id="seconds">8</span> 秒后自动跳转,
-                    您也可以点此 <a class="text-primary" href="login.html" id="target" th:href="@{${target}}">链接</a>, 手动跳转!
+                    您也可以点此 <a class="text-primary" href="requiredLogin.html" id="target" th:href="@{${target}}">链接</a>,
+                    手动跳转!
                 </p>
             </div>
         </div>

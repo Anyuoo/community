@@ -95,6 +95,12 @@ public class LoginController implements CommunityConstant {
         }
     }
 
+    /**
+     * 退出登录
+     *
+     * @param ticket
+     * @return
+     */
     @GetMapping("/logout")
     public String logout(@CookieValue("ticket") String ticket) {
         userService.logout(ticket);
@@ -142,8 +148,7 @@ public class LoginController implements CommunityConstant {
      * @param userId
      * @param code
      * @param model
-     * @return
-     * http://localhost:8080/community/activation/userId/code
+     * @return http://localhost:8080/community/activation/userId/code
      * http://localhost:8080/community/activation/168/417ab9e8903747afbd51cfa9e46447b0
      */
     @GetMapping("/activation/{userId}/{code}")

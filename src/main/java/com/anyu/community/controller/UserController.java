@@ -124,6 +124,15 @@ public class UserController {
         }
     }
 
+    /**
+     * 更新密码
+     *
+     * @param model
+     * @param ticket
+     * @param oldPassword
+     * @param newPassword
+     * @return
+     */
     @PostMapping("/update")
     @RequiredLogin
     public String updateUserPassword(Model model, @CookieValue("ticket") String ticket, @Length(min = 6, max = 15, message = "{user.password.length}") String oldPassword, @Length(min = 6, max = 15, message = "{user.password.length}") String newPassword) {

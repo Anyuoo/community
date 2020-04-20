@@ -36,3 +36,4 @@ community:
   path:
     domain: http://localhost:8080
     upload: f:/community/upload
+

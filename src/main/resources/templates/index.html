@@ -27,6 +27,7 @@
                     </li>
                 </ul>
                 <button class="btn btn-primary btn-sm position-absolute rt-0" data-target="#publishModal"
+                        th:if="${loginUser != null}"
                         data-toggle="modal"
                         type="button">我要发布
                 </button>
@@ -47,11 +48,12 @@
                             <form>
                                 <div class="form-group">
                                     <label class="col-form-label" for="recipient-name">标题：</label>
-                                    <input class="form-control" id="recipient-name" type="text">
+                                    <input class="form-control" id="recipient-name" name="title" type="text">
                                 </div>
                                 <div class="form-group">
                                     <label class="col-form-label" for="message-text">正文：</label>
-                                    <textarea class="form-control" id="message-text" rows="15"></textarea>
+                                    <textarea class="form-control" id="message-text" name="content"
+                                              rows="15"></textarea>
                                 </div>
                             </form>
                         </div>
@@ -71,7 +73,7 @@
                             <h5 class="modal-title" id="hintModalLabel">提示</h5>
                         </div>
                         <div class="modal-body" id="hintBody">
-                            发布完毕!
+                            发布完毕
                         </div>
                     </div>
                 </div>

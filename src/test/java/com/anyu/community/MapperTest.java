@@ -24,6 +24,7 @@ public class MapperTest {
     @Autowired
     private LoginTicketMapper loginTicketMapper;
 
+
     @Test
     void loginTicket() {
         LoginTicket loginTicket = new LoginTicket();
@@ -67,5 +68,15 @@ public class MapperTest {
         ) {
             System.out.println(d);
         }
+    }
+
+    @Test
+    void distAddDiscuss() {
+        DiscussPost discussPost = new DiscussPost();
+        discussPost.setTitle("title");
+        discussPost.setContent("content");
+        discussPost.setUserId(1);
+        discussPost.setCreateTime(new Date());
+        discussPostMapper.insertDiscussPost(discussPost);
     }
 }

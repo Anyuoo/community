@@ -30,7 +30,7 @@
                         <a class="nav-link" th:href="@{/register}">注册</a>
                     </li>
                     <li class="nav-item ml-3 btn-group-vertical" th:if="${loginUser == null}">
-                        <a class="nav-link" th:href="@{/requiredLogin}">登录</a>
+                        <a class="nav-link" th:href="@{/login}">登录</a>
                     </li>
                     <li class="nav-item ml-3 btn-group-vertical dropdown" th:if="${loginUser != null}">
                         <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle"

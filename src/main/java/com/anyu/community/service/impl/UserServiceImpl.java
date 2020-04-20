@@ -5,11 +5,7 @@ import com.anyu.community.entity.User;
 import com.anyu.community.service.UserService;
 import com.anyu.community.utils.CommunityConstant;
 import com.anyu.community.utils.CommunityUtil;
-import com.anyu.community.utils.MailClient;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.util.Date;
@@ -20,17 +16,6 @@ import java.util.Random;
 @Service
 public class UserServiceImpl extends BasedClass implements UserService, CommunityConstant {
 
-    @Autowired
-    private MailClient mailClient;
-
-    @Autowired
-    private TemplateEngine engine;
-
-    @Value("${community.path.domain}")
-    private String domain;
-
-    @Value("${server.servlet.context-path}")
-    private String contextPath;
 
     /**
      * 查找用户

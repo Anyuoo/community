@@ -1,8 +1,10 @@
 package com.anyu.community;
 
+import com.anyu.community.entity.Comment;
 import com.anyu.community.entity.DiscussPost;
 import com.anyu.community.entity.LoginTicket;
 import com.anyu.community.entity.User;
+import com.anyu.community.mapper.CommentMapper;
 import com.anyu.community.mapper.DiscussPostMapper;
 import com.anyu.community.mapper.LoginTicketMapper;
 import com.anyu.community.mapper.UserMapper;
@@ -24,6 +26,18 @@ public class MapperTest {
     @Autowired
     private LoginTicketMapper loginTicketMapper;
 
+    @Autowired
+    private CommentMapper commentMapper;
+
+
+    @Test
+    void commentmapperTest() {
+        int rows = commentMapper.selectCountByEntity(1, 228);
+        List<Comment> list = commentMapper.selectCommentByEntity(1, 228, 0, rows);
+        for (Comment comment : list) {
+            System.out.println(comment);
+        }
+    }
 
     @Test
     void loginTicket() {

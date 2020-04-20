@@ -10,7 +10,6 @@ import java.util.List;
 @Service
 public class DiscussPostServiceImpl extends BasedClass implements DiscussPostServicce {
 
-
     @Override
     public List<DiscussPost> findDiscussPosts(int userId, int offset, int limit) {
         return discussPostMapper.selectDiscussPost(userId, offset, limit);
@@ -33,5 +32,10 @@ public class DiscussPostServiceImpl extends BasedClass implements DiscussPostSer
         discussPost.setTitle(sensitiveFilter.filter(discussPost.getTitle()));
         discussPost.setContent(sensitiveFilter.filter(discussPost.getContent()));
         return discussPostMapper.insertDiscussPost(discussPost);
+    }
+
+    @Override
+    public DiscussPost findDiscussPostById(int id) {
+        return discussPostMapper.selectDiscussPostById(id);
     }
 }

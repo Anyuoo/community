@@ -1,5 +1,6 @@
 package com.anyu.community.service.impl;
 
+import com.anyu.community.mapper.CommentMapper;
 import com.anyu.community.mapper.DiscussPostMapper;
 import com.anyu.community.mapper.LoginTicketMapper;
 import com.anyu.community.mapper.UserMapper;
@@ -18,6 +19,8 @@ public class BasedClass {
     protected DiscussPostMapper discussPostMapper;
     @Autowired
     protected LoginTicketMapper loginTicketMapper;
+    @Autowired
+    protected CommentMapper commentMapper;
     @Autowired
     protected HostHolder hostHolder;
     @Autowired

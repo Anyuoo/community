@@ -61,7 +61,7 @@ public class Page {
      *
      * @return 行数
      */
-    public int getOffSet() {
+    public int getOffset() {
         return (current - 1) * limit;
     }
 

@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.thymeleaf.TemplateEngine;
 
 
-public class BasedClass {
+public class BaseClass {
     @Autowired
     protected UserMapper userMapper;
     @Autowired

@@ -10,4 +10,6 @@ public interface CommentService extends CommunityConstant {
     List<Comment> findCommentsByEntity(EntityType entityType, int entityId, int offset, int limit);
 
     int findCommentCount(EntityType entityType, int entityId);
+
+    int addComment(Comment comment);
 }

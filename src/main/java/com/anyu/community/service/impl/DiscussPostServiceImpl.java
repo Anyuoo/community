@@ -8,7 +8,7 @@ import org.springframework.web.util.HtmlUtils;
 import java.util.List;
 
 @Service
-public class DiscussPostServiceImpl extends BasedClass implements DiscussPostServicce {
+public class DiscussPostServiceImpl extends BaseClass implements DiscussPostServicce {
 
     @Override
     public List<DiscussPost> findDiscussPosts(int userId, int offset, int limit) {

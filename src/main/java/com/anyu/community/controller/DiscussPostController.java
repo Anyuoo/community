@@ -94,20 +94,21 @@ public class DiscussPostController implements CommunityConstant {
                 List<Comment> replyList = commentService.findCommentsByEntity(EntityType.COMMENT, comment.getId(), 0, replyCount);
                 List<Map<String, Object>> replyVOList = new ArrayList<>(replyCount);
                 for (Comment reply : replyList) {
-                    Map<String, Object> replyOV = new HashMap<>(4);
+                    Map<String, Object> replyVO = new HashMap<>(4);
                     //回复
-                    replyOV.put("reply", reply);
+                    replyVO.put("reply", reply);
                     //回复者
-                    replyOV.put("replier", userService.findUserById(reply.getUserId()));
+                    replyVO.put("replier", userService.findUserById(reply.getUserId()));
                     //回复目标
-                    User target = userService.findUserById(reply.getTargetId());
-                    replyOV.put("target", target);
-                    replyVOList.add(replyOV);
+                    User target = reply.getTargetId() == 0 ? null : userService.findUserById(reply.getTargetId());
+                    System.out.println(target);
+                    replyVO.put("target", target);
+                    replyVOList.add(replyVO);
                 }
                 //回复数
-                commentVO.put("replyOV", replyCount);
+                commentVO.put("replyCount", replyCount);
                 //回复列表
-                commentVO.put("replyOVList", replyVOList);
+                commentVO.put("replyVOList", replyVOList);
                 commentVOList.add(commentVO);
             }
             model.addAttribute("commentCount", commentCount);

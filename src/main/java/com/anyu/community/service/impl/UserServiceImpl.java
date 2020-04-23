@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Random;
 
 @Service
-public class UserServiceImpl extends BasedClass implements UserService, CommunityConstant {
+public class UserServiceImpl extends BaseClass implements UserService, CommunityConstant {
 
 
     /**

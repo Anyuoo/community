@@ -6,6 +6,8 @@ import com.anyu.community.entity.User;
 import java.util.Map;
 
 public interface UserService {
+    User findByName(String username);
+
     User findUserById(int id);
 
     Map<String, Object> register(User user);

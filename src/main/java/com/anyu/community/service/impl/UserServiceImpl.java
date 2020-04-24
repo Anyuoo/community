@@ -16,6 +16,10 @@ import java.util.Random;
 @Service
 public class UserServiceImpl extends BaseClass implements UserService, CommunityConstant {
 
+    @Override
+    public User findByName(String username) {
+        return userMapper.selectByName(username);
+    }
 
     /**
      * 查找用户

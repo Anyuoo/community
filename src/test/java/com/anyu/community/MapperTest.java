@@ -1,13 +1,7 @@
 package com.anyu.community;
 
-import com.anyu.community.entity.Comment;
-import com.anyu.community.entity.DiscussPost;
-import com.anyu.community.entity.LoginTicket;
-import com.anyu.community.entity.User;
-import com.anyu.community.mapper.CommentMapper;
-import com.anyu.community.mapper.DiscussPostMapper;
-import com.anyu.community.mapper.LoginTicketMapper;
-import com.anyu.community.mapper.UserMapper;
+import com.anyu.community.entity.*;
+import com.anyu.community.mapper.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,6 +22,29 @@ public class MapperTest {
 
     @Autowired
     private CommentMapper commentMapper;
+
+    @Autowired
+    private MessageMapper messageMapper;
+
+    @Test
+    void messagetest() {
+        int count = messageMapper.countConversations(111);
+        List<Message> list = messageMapper.listConversations(111, 0, count);
+        int n = 0;
+        Message message = null;
+        for (Message m :
+                list) {
+            message = m;
+            System.out.println("第" + (++n) + "条:" + m);
+        }
+        message.setToId(175);
+        message.setId(0);
+
+        for (int i = 0; i < 10; i++) {
+            messageMapper.insertMessage(message);
+
+        }
+    }
 
 
     @Test

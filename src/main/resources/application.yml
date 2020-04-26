@@ -24,6 +24,14 @@ spring:
     password: zngjtedtoxzhdfca
     protocol: smtps
 
+
+  #RedisProperties
+  redis:
+    database: 1
+    port: 6379
+    host: localhost
+
+#mybatis
 mybatis:
   type-aliases-package: com.anyu.community.entity
   mapper-locations: classpath:/mapper/*.xml

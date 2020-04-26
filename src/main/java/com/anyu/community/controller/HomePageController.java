@@ -42,4 +42,14 @@ public class HomePageController {
         model.addAttribute("PostAndUser", postAndUser);
         return "index";
     }
+
+    /**
+     * 返回错误页面
+     *
+     * @return
+     */
+    @GetMapping("/error")
+    public String getErrorPage() {
+        return "error/500";
+    }
 }

@@ -168,8 +168,26 @@ public class MessageController {
         String conversationId = fromUser.getId() > toUser.getId() ? toUser.getId() + "_" + fromUser.getId() : fromUser.getId() + "_" + toUser.getId();
         message.setConversationId(conversationId);
         messageService.saveMessage(message);
-        System.out.println(message);
         return CommunityUtil.getJSONString(1, "发送成功！");
+    }
+
+
+    /**
+     * 删除私信
+     *
+     * @param id
+     * @return
+     */
+    @PostMapping("/delete")
+    @ResponseBody
+    public String deleteMessage(int id) {
+        if (id == 0)
+            return CommunityUtil.getJSONString(403, "删除失败！");
+        List<Integer> ids = new ArrayList<>(1);
+        ids.add(id);
+        System.out.println(id);
+        messageService.deleteMessage(ids, 2);
+        return CommunityUtil.getJSONString(1, "删除成功！");
     }
 
 

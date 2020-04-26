@@ -11,7 +11,6 @@ function send_letter() {
         CONTEXT_PATH + "/letter/send",
         {"toUsername": toUsername, "content": content},
         function (data) {
-            console.log(data)
             data = $.parseJSON(data);
             if (data.code === 403) {
                 $("#hintBody").text(data.msg);
@@ -22,13 +21,24 @@ function send_letter() {
             $("#hintModal").modal("show");
             setTimeout(function () {
                 $("#hintModal").modal("hide");
-                location.reload();
+                window.location.reload();
             }, 2000);
         }
     );
 }
 
 function delete_msg() {
+    var id = $("#delete-id").val();
+    $.post(
+        CONTEXT_PATH + "/letter/delete",
+        {"id": id},
+        function (data) {
+            data = $.parseJSON(data);
+            if (data.code === 1) {
+                window.location.reload();
+            }
+        }
+    );
     // TODO 删除数据
     $(this).parents(".media").remove();
 }

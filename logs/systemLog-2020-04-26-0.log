@@ -1,0 +1,126 @@
+2020-04-26 15:39:09.003 [ main ] - [ INFO  ] [ com.anyu.community.CommunityApplication : 55 ] - Starting CommunityApplication on DESKTOP-9TPN1U9 with PID 14300 (E:\community\target\classes started by MasterPO in E:\community)
+2020-04-26 15:39:09.005 [ main ] - [ DEBUG ] [ com.anyu.community.CommunityApplication : 56 ] - Running with Spring Boot v2.2.6.RELEASE, Spring v5.2.5.RELEASE
+2020-04-26 15:39:09.006 [ main ] - [ INFO  ] [ com.anyu.community.CommunityApplication : 651 ] - No active profile set, falling back to default profiles: default
+2020-04-26 15:39:10.157 [ main ] - [ INFO  ] [ org.apache.coyote.http11.Http11NioProtocol : 173 ] - Initializing ProtocolHandler ["http-nio-8080"]
+2020-04-26 15:39:10.160 [ main ] - [ INFO  ] [ org.apache.catalina.core.StandardService : 173 ] - Starting service [Tomcat]
+2020-04-26 15:39:10.160 [ main ] - [ INFO  ] [ org.apache.catalina.core.StandardEngine : 173 ] - Starting Servlet engine: [Apache Tomcat/9.0.33]
+2020-04-26 15:39:10.224 [ main ] - [ INFO  ] [ o.a.c.c.C.[Tomcat].[localhost].[/community] : 173 ] - Initializing Spring embedded WebApplicationContext
+2020-04-26 15:39:11.022 [ main ] - [ INFO  ] [ org.apache.coyote.http11.Http11NioProtocol : 173 ] - Starting ProtocolHandler ["http-nio-8080"]
+2020-04-26 15:39:11.043 [ main ] - [ INFO  ] [ com.anyu.community.CommunityApplication : 61 ] - Started CommunityApplication in 2.499 seconds (JVM running for 3.665)
+2020-04-26 15:39:29.264 [ http-nio-8080-exec-1 ] - [ INFO  ] [ o.a.c.c.C.[Tomcat].[localhost].[/community] : 173 ] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2020-04-26 15:39:29.291 [ http-nio-8080-exec-1 ] - [ INFO  ] [ com.anyu.community.aspect.ServiceLogAspect : 40 ] - 用户[0:0:0:0:0:0:0:1]在[20-117-39 15:39:29]访问了[com.anyu.community.service.impl.UserServiceImpl.findLoginTicket]
+2020-04-26 15:39:29.360 [ http-nio-8080-exec-1 ] - [ INFO  ] [ com.alibaba.druid.pool.DruidDataSource : 1010 ] - {dataSource-1} inited
+2020-04-26 15:39:29.517 [ http-nio-8080-exec-1 ] - [ DEBUG ] [ c.a.c.m.L.selectLoginTicketByTicket : 143 ] - ==>  Preparing: select id,user_id,ticket,status,expired from login_ticket where ticket=? 
+2020-04-26 15:39:29.531 [ http-nio-8080-exec-1 ] - [ DEBUG ] [ c.a.c.m.L.selectLoginTicketByTicket : 143 ] - ==> Parameters: 985d08c4b1274b4abe6bdcc5bd7eee59(String)
+2020-04-26 15:39:29.544 [ http-nio-8080-exec-1 ] - [ DEBUG ] [ c.a.c.m.L.selectLoginTicketByTicket : 143 ] - <==      Total: 1
+2020-04-26 15:39:29.547 [ http-nio-8080-exec-1 ] - [ INFO  ] [ com.anyu.community.aspect.ServiceLogAspect : 40 ] - 用户[0:0:0:0:0:0:0:1]在[20-117-39 15:39:29]访问了[com.anyu.community.service.impl.UserServiceImpl.findUserById]
+2020-04-26 15:39:29.548 [ http-nio-8080-exec-1 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - ==>  Preparing: select id,username,password,salt,email,type,status,activation_code,header_url,create_time from user where id = ? 
+2020-04-26 15:39:29.548 [ http-nio-8080-exec-1 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - ==> Parameters: 175(Integer)
+2020-04-26 15:39:29.551 [ http-nio-8080-exec-1 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - <==      Total: 1
+2020-04-26 15:39:29.566 [ http-nio-8080-exec-1 ] - [ INFO  ] [ com.anyu.community.aspect.ServiceLogAspect : 40 ] - 用户[0:0:0:0:0:0:0:1]在[20-117-39 15:39:29]访问了[com.anyu.community.service.impl.MessageServiceImpl.countConversations]
+2020-04-26 15:39:29.570 [ http-nio-8080-exec-1 ] - [ DEBUG ] [ c.a.c.mapper.MessageMapper.countConversations : 143 ] - ==>  Preparing: select count(m.max_id) from ( select max(id) as max_id from message where (to_id=? or from_id=?) and status != 2 and from_id != 1 group by conversation_id ) as m 
+2020-04-26 15:39:29.570 [ http-nio-8080-exec-1 ] - [ DEBUG ] [ c.a.c.mapper.MessageMapper.countConversations : 143 ] - ==> Parameters: 175(Integer), 175(Integer)
+2020-04-26 15:39:29.575 [ http-nio-8080-exec-1 ] - [ DEBUG ] [ c.a.c.mapper.MessageMapper.countConversations : 143 ] - <==      Total: 1
+2020-04-26 15:39:29.575 [ http-nio-8080-exec-1 ] - [ INFO  ] [ com.anyu.community.aspect.ServiceLogAspect : 40 ] - 用户[0:0:0:0:0:0:0:1]在[20-117-39 15:39:29]访问了[com.anyu.community.service.impl.MessageServiceImpl.listConversations]
+2020-04-26 15:39:29.576 [ http-nio-8080-exec-1 ] - [ DEBUG ] [ c.a.c.mapper.MessageMapper.listConversations : 143 ] - ==>  Preparing: select id,from_id,to_id,conversation_id,content,status,create_time from message where id in ( select max(id) from message where (to_id=? or from_id=?) and status != 2 and from_id != 1 group by conversation_id ) order by id desc limit ?,? 
+2020-04-26 15:39:29.577 [ http-nio-8080-exec-1 ] - [ DEBUG ] [ c.a.c.mapper.MessageMapper.listConversations : 143 ] - ==> Parameters: 175(Integer), 175(Integer), 0(Integer), 10(Integer)
+2020-04-26 15:39:29.581 [ http-nio-8080-exec-1 ] - [ DEBUG ] [ c.a.c.mapper.MessageMapper.listConversations : 143 ] - <==      Total: 1
+2020-04-26 15:39:29.582 [ http-nio-8080-exec-1 ] - [ INFO  ] [ com.anyu.community.aspect.ServiceLogAspect : 40 ] - 用户[0:0:0:0:0:0:0:1]在[20-117-39 15:39:29]访问了[com.anyu.community.service.impl.UserServiceImpl.findUserById]
+2020-04-26 15:39:29.583 [ http-nio-8080-exec-1 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - ==>  Preparing: select id,username,password,salt,email,type,status,activation_code,header_url,create_time from user where id = ? 
+2020-04-26 15:39:29.583 [ http-nio-8080-exec-1 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - ==> Parameters: 111(Integer)
+2020-04-26 15:39:29.586 [ http-nio-8080-exec-1 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - <==      Total: 1
+2020-04-26 15:39:29.587 [ http-nio-8080-exec-1 ] - [ INFO  ] [ com.anyu.community.aspect.ServiceLogAspect : 40 ] - 用户[0:0:0:0:0:0:0:1]在[20-117-39 15:39:29]访问了[com.anyu.community.service.impl.MessageServiceImpl.countLetters]
+2020-04-26 15:39:29.588 [ http-nio-8080-exec-1 ] - [ DEBUG ] [ c.anyu.community.mapper.MessageMapper.countLetters : 143 ] - ==>  Preparing: select count(*) from message where status != 2 and from_id != 1 and conversation_id = ? 
+2020-04-26 15:39:29.588 [ http-nio-8080-exec-1 ] - [ DEBUG ] [ c.anyu.community.mapper.MessageMapper.countLetters : 143 ] - ==> Parameters: 111_175(String)
+2020-04-26 15:39:29.589 [ http-nio-8080-exec-1 ] - [ DEBUG ] [ c.anyu.community.mapper.MessageMapper.countLetters : 143 ] - <==      Total: 1
+2020-04-26 15:39:29.590 [ http-nio-8080-exec-1 ] - [ INFO  ] [ com.anyu.community.aspect.ServiceLogAspect : 40 ] - 用户[0:0:0:0:0:0:0:1]在[20-117-39 15:39:29]访问了[com.anyu.community.service.impl.MessageServiceImpl.countUnreadLetters]
+2020-04-26 15:39:29.604 [ http-nio-8080-exec-1 ] - [ DEBUG ] [ c.a.c.mapper.MessageMapper.countUnreadLetters : 143 ] - ==>  Preparing: select count(*) from message where status = 0 and from_id != 1 and to_id = ? and conversation_id = ? 
+2020-04-26 15:39:29.605 [ http-nio-8080-exec-1 ] - [ DEBUG ] [ c.a.c.mapper.MessageMapper.countUnreadLetters : 143 ] - ==> Parameters: 175(Integer), 111_175(String)
+2020-04-26 15:39:29.606 [ http-nio-8080-exec-1 ] - [ DEBUG ] [ c.a.c.mapper.MessageMapper.countUnreadLetters : 143 ] - <==      Total: 1
+2020-04-26 15:39:29.607 [ http-nio-8080-exec-1 ] - [ INFO  ] [ com.anyu.community.aspect.ServiceLogAspect : 40 ] - 用户[0:0:0:0:0:0:0:1]在[20-117-39 15:39:29]访问了[com.anyu.community.service.impl.MessageServiceImpl.countUnreadLetters]
+2020-04-26 15:39:29.607 [ http-nio-8080-exec-1 ] - [ DEBUG ] [ c.a.c.mapper.MessageMapper.countUnreadLetters : 143 ] - ==>  Preparing: select count(*) from message where status = 0 and from_id != 1 and to_id = ? 
+2020-04-26 15:39:29.608 [ http-nio-8080-exec-1 ] - [ DEBUG ] [ c.a.c.mapper.MessageMapper.countUnreadLetters : 143 ] - ==> Parameters: 175(Integer)
+2020-04-26 15:39:29.609 [ http-nio-8080-exec-1 ] - [ DEBUG ] [ c.a.c.mapper.MessageMapper.countUnreadLetters : 143 ] - <==      Total: 1
+2020-04-26 15:39:30.739 [ http-nio-8080-exec-7 ] - [ INFO  ] [ com.anyu.community.aspect.ServiceLogAspect : 40 ] - 用户[0:0:0:0:0:0:0:1]在[20-117-39 15:39:30]访问了[com.anyu.community.service.impl.UserServiceImpl.findLoginTicket]
+2020-04-26 15:39:30.741 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ c.a.c.m.L.selectLoginTicketByTicket : 143 ] - ==>  Preparing: select id,user_id,ticket,status,expired from login_ticket where ticket=? 
+2020-04-26 15:39:30.741 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ c.a.c.m.L.selectLoginTicketByTicket : 143 ] - ==> Parameters: 985d08c4b1274b4abe6bdcc5bd7eee59(String)
+2020-04-26 15:39:30.743 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ c.a.c.m.L.selectLoginTicketByTicket : 143 ] - <==      Total: 1
+2020-04-26 15:39:30.743 [ http-nio-8080-exec-7 ] - [ INFO  ] [ com.anyu.community.aspect.ServiceLogAspect : 40 ] - 用户[0:0:0:0:0:0:0:1]在[20-117-39 15:39:30]访问了[com.anyu.community.service.impl.UserServiceImpl.findUserById]
+2020-04-26 15:39:30.744 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - ==>  Preparing: select id,username,password,salt,email,type,status,activation_code,header_url,create_time from user where id = ? 
+2020-04-26 15:39:30.746 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - ==> Parameters: 175(Integer)
+2020-04-26 15:39:30.748 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - <==      Total: 1
+2020-04-26 15:39:30.771 [ http-nio-8080-exec-7 ] - [ INFO  ] [ com.anyu.community.aspect.ServiceLogAspect : 40 ] - 用户[0:0:0:0:0:0:0:1]在[20-117-39 15:39:30]访问了[com.anyu.community.service.impl.DiscussPostServiceImpl.findDiscussPostRows]
+2020-04-26 15:39:30.774 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ c.a.c.m.DiscussPostMapper.selectDiscussPostRows : 143 ] - ==>  Preparing: select count(id) from discuss_post where status != 2 
+2020-04-26 15:39:30.775 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ c.a.c.m.DiscussPostMapper.selectDiscussPostRows : 143 ] - ==> Parameters: 
+2020-04-26 15:39:30.783 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ c.a.c.m.DiscussPostMapper.selectDiscussPostRows : 143 ] - <==      Total: 1
+2020-04-26 15:39:30.784 [ http-nio-8080-exec-7 ] - [ INFO  ] [ com.anyu.community.aspect.ServiceLogAspect : 40 ] - 用户[0:0:0:0:0:0:0:1]在[20-117-39 15:39:30]访问了[com.anyu.community.service.impl.DiscussPostServiceImpl.findDiscussPosts]
+2020-04-26 15:39:30.785 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ c.a.c.mapper.DiscussPostMapper.selectDiscussPost : 143 ] - ==>  Preparing: select id,user_id,title,content,type,status,create_time,comment_count,score from discuss_post where status != 2 order by type desc,create_time desc limit ?,? 
+2020-04-26 15:39:30.785 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ c.a.c.mapper.DiscussPostMapper.selectDiscussPost : 143 ] - ==> Parameters: 0(Integer), 10(Integer)
+2020-04-26 15:39:30.790 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ c.a.c.mapper.DiscussPostMapper.selectDiscussPost : 143 ] - <==      Total: 10
+2020-04-26 15:39:30.791 [ http-nio-8080-exec-7 ] - [ INFO  ] [ com.anyu.community.aspect.ServiceLogAspect : 40 ] - 用户[0:0:0:0:0:0:0:1]在[20-117-39 15:39:30]访问了[com.anyu.community.service.impl.UserServiceImpl.findUserById]
+2020-04-26 15:39:30.792 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - ==>  Preparing: select id,username,password,salt,email,type,status,activation_code,header_url,create_time from user where id = ? 
+2020-04-26 15:39:30.792 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - ==> Parameters: 11(Integer)
+2020-04-26 15:39:30.793 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - <==      Total: 1
+2020-04-26 15:39:30.794 [ http-nio-8080-exec-7 ] - [ INFO  ] [ com.anyu.community.aspect.ServiceLogAspect : 40 ] - 用户[0:0:0:0:0:0:0:1]在[20-117-39 15:39:30]访问了[com.anyu.community.service.impl.UserServiceImpl.findUserById]
+2020-04-26 15:39:30.796 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - ==>  Preparing: select id,username,password,salt,email,type,status,activation_code,header_url,create_time from user where id = ? 
+2020-04-26 15:39:30.797 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - ==> Parameters: 111(Integer)
+2020-04-26 15:39:30.798 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - <==      Total: 1
+2020-04-26 15:39:30.799 [ http-nio-8080-exec-7 ] - [ INFO  ] [ com.anyu.community.aspect.ServiceLogAspect : 40 ] - 用户[0:0:0:0:0:0:0:1]在[20-117-39 15:39:30]访问了[com.anyu.community.service.impl.UserServiceImpl.findUserById]
+2020-04-26 15:39:30.799 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - ==>  Preparing: select id,username,password,salt,email,type,status,activation_code,header_url,create_time from user where id = ? 
+2020-04-26 15:39:30.800 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - ==> Parameters: 175(Integer)
+2020-04-26 15:39:30.802 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - <==      Total: 1
+2020-04-26 15:39:30.802 [ http-nio-8080-exec-7 ] - [ INFO  ] [ com.anyu.community.aspect.ServiceLogAspect : 40 ] - 用户[0:0:0:0:0:0:0:1]在[20-117-39 15:39:30]访问了[com.anyu.community.service.impl.UserServiceImpl.findUserById]
+2020-04-26 15:39:30.803 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - ==>  Preparing: select id,username,password,salt,email,type,status,activation_code,header_url,create_time from user where id = ? 
+2020-04-26 15:39:30.804 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - ==> Parameters: 175(Integer)
+2020-04-26 15:39:30.806 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - <==      Total: 1
+2020-04-26 15:39:30.807 [ http-nio-8080-exec-7 ] - [ INFO  ] [ com.anyu.community.aspect.ServiceLogAspect : 40 ] - 用户[0:0:0:0:0:0:0:1]在[20-117-39 15:39:30]访问了[com.anyu.community.service.impl.UserServiceImpl.findUserById]
+2020-04-26 15:39:30.807 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - ==>  Preparing: select id,username,password,salt,email,type,status,activation_code,header_url,create_time from user where id = ? 
+2020-04-26 15:39:30.808 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - ==> Parameters: 175(Integer)
+2020-04-26 15:39:30.810 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - <==      Total: 1
+2020-04-26 15:39:30.811 [ http-nio-8080-exec-7 ] - [ INFO  ] [ com.anyu.community.aspect.ServiceLogAspect : 40 ] - 用户[0:0:0:0:0:0:0:1]在[20-117-39 15:39:30]访问了[com.anyu.community.service.impl.UserServiceImpl.findUserById]
+2020-04-26 15:39:30.813 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - ==>  Preparing: select id,username,password,salt,email,type,status,activation_code,header_url,create_time from user where id = ? 
+2020-04-26 15:39:30.814 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - ==> Parameters: 1(Integer)
+2020-04-26 15:39:30.815 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - <==      Total: 1
+2020-04-26 15:39:30.816 [ http-nio-8080-exec-7 ] - [ INFO  ] [ com.anyu.community.aspect.ServiceLogAspect : 40 ] - 用户[0:0:0:0:0:0:0:1]在[20-117-39 15:39:30]访问了[com.anyu.community.service.impl.UserServiceImpl.findUserById]
+2020-04-26 15:39:30.817 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - ==>  Preparing: select id,username,password,salt,email,type,status,activation_code,header_url,create_time from user where id = ? 
+2020-04-26 15:39:30.817 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - ==> Parameters: 1(Integer)
+2020-04-26 15:39:30.818 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - <==      Total: 1
+2020-04-26 15:39:30.819 [ http-nio-8080-exec-7 ] - [ INFO  ] [ com.anyu.community.aspect.ServiceLogAspect : 40 ] - 用户[0:0:0:0:0:0:0:1]在[20-117-39 15:39:30]访问了[com.anyu.community.service.impl.UserServiceImpl.findUserById]
+2020-04-26 15:39:30.819 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - ==>  Preparing: select id,username,password,salt,email,type,status,activation_code,header_url,create_time from user where id = ? 
+2020-04-26 15:39:30.820 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - ==> Parameters: 149(Integer)
+2020-04-26 15:39:30.821 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - <==      Total: 1
+2020-04-26 15:39:30.822 [ http-nio-8080-exec-7 ] - [ INFO  ] [ com.anyu.community.aspect.ServiceLogAspect : 40 ] - 用户[0:0:0:0:0:0:0:1]在[20-117-39 15:39:30]访问了[com.anyu.community.service.impl.UserServiceImpl.findUserById]
+2020-04-26 15:39:30.822 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - ==>  Preparing: select id,username,password,salt,email,type,status,activation_code,header_url,create_time from user where id = ? 
+2020-04-26 15:39:30.822 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - ==> Parameters: 149(Integer)
+2020-04-26 15:39:30.823 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - <==      Total: 1
+2020-04-26 15:39:30.824 [ http-nio-8080-exec-7 ] - [ INFO  ] [ com.anyu.community.aspect.ServiceLogAspect : 40 ] - 用户[0:0:0:0:0:0:0:1]在[20-117-39 15:39:30]访问了[com.anyu.community.service.impl.UserServiceImpl.findUserById]
+2020-04-26 15:39:30.824 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - ==>  Preparing: select id,username,password,salt,email,type,status,activation_code,header_url,create_time from user where id = ? 
+2020-04-26 15:39:30.825 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - ==> Parameters: 149(Integer)
+2020-04-26 15:39:30.826 [ http-nio-8080-exec-7 ] - [ DEBUG ] [ com.anyu.community.mapper.UserMapper.selectById : 143 ] - <==      Total: 1
+2020-04-26 17:02:38.475 [ main ] - [ INFO  ] [ com.anyu.community.RedisTest : 55 ] - Starting RedisTest on DESKTOP-9TPN1U9 with PID 9668 (started by MasterPO in E:\community)
+2020-04-26 17:02:38.478 [ main ] - [ DEBUG ] [ com.anyu.community.RedisTest : 56 ] - Running with Spring Boot v2.2.6.RELEASE, Spring v5.2.5.RELEASE
+2020-04-26 17:02:38.479 [ main ] - [ INFO  ] [ com.anyu.community.RedisTest : 651 ] - No active profile set, falling back to default profiles: default
+2020-04-26 17:02:43.120 [ main ] - [ INFO  ] [ com.anyu.community.RedisTest : 61 ] - Started RedisTest in 5.014 seconds (JVM running for 7.332)
+2020-04-26 17:02:43.312 [ SpringContextShutdownHook ] - [ INFO  ] [ com.alibaba.druid.pool.DruidDataSource : 2003 ] - {dataSource-0} closing ...
+2020-04-26 17:03:36.578 [ main ] - [ INFO  ] [ com.anyu.community.RedisTest : 55 ] - Starting RedisTest on DESKTOP-9TPN1U9 with PID 7128 (started by MasterPO in E:\community)
+2020-04-26 17:03:36.582 [ main ] - [ DEBUG ] [ com.anyu.community.RedisTest : 56 ] - Running with Spring Boot v2.2.6.RELEASE, Spring v5.2.5.RELEASE
+2020-04-26 17:03:36.583 [ main ] - [ INFO  ] [ com.anyu.community.RedisTest : 651 ] - No active profile set, falling back to default profiles: default
+2020-04-26 17:03:41.861 [ main ] - [ INFO  ] [ com.anyu.community.RedisTest : 61 ] - Started RedisTest in 5.723 seconds (JVM running for 7.99)
+2020-04-26 17:03:42.070 [ SpringContextShutdownHook ] - [ INFO  ] [ com.alibaba.druid.pool.DruidDataSource : 2003 ] - {dataSource-0} closing ...
+2020-04-26 17:09:36.416 [ main ] - [ INFO  ] [ com.anyu.community.RedisTest : 55 ] - Starting RedisTest on DESKTOP-9TPN1U9 with PID 5968 (started by MasterPO in E:\community)
+2020-04-26 17:09:36.427 [ main ] - [ DEBUG ] [ com.anyu.community.RedisTest : 56 ] - Running with Spring Boot v2.2.6.RELEASE, Spring v5.2.5.RELEASE
+2020-04-26 17:09:36.431 [ main ] - [ INFO  ] [ com.anyu.community.RedisTest : 651 ] - No active profile set, falling back to default profiles: default
+2020-04-26 17:09:40.735 [ main ] - [ INFO  ] [ com.anyu.community.RedisTest : 61 ] - Started RedisTest in 5.054 seconds (JVM running for 6.677)
+2020-04-26 17:09:40.947 [ SpringContextShutdownHook ] - [ INFO  ] [ com.alibaba.druid.pool.DruidDataSource : 2003 ] - {dataSource-0} closing ...
+2020-04-26 17:10:46.569 [ main ] - [ INFO  ] [ com.anyu.community.RedisTest : 55 ] - Starting RedisTest on DESKTOP-9TPN1U9 with PID 11860 (started by MasterPO in E:\community)
+2020-04-26 17:10:46.572 [ main ] - [ DEBUG ] [ com.anyu.community.RedisTest : 56 ] - Running with Spring Boot v2.2.6.RELEASE, Spring v5.2.5.RELEASE
+2020-04-26 17:10:46.573 [ main ] - [ INFO  ] [ com.anyu.community.RedisTest : 651 ] - No active profile set, falling back to default profiles: default
+2020-04-26 17:10:50.616 [ main ] - [ INFO  ] [ com.anyu.community.RedisTest : 61 ] - Started RedisTest in 4.581 seconds (JVM running for 6.142)
+2020-04-26 17:10:50.694 [ SpringContextShutdownHook ] - [ INFO  ] [ com.alibaba.druid.pool.DruidDataSource : 2003 ] - {dataSource-0} closing ...
+2020-04-26 17:14:49.099 [ main ] - [ INFO  ] [ com.anyu.community.RedisTest : 55 ] - Starting RedisTest on DESKTOP-9TPN1U9 with PID 13496 (started by MasterPO in E:\community)
+2020-04-26 17:14:49.104 [ main ] - [ DEBUG ] [ com.anyu.community.RedisTest : 56 ] - Running with Spring Boot v2.2.6.RELEASE, Spring v5.2.5.RELEASE
+2020-04-26 17:14:49.105 [ main ] - [ INFO  ] [ com.anyu.community.RedisTest : 651 ] - No active profile set, falling back to default profiles: default
+2020-04-26 17:14:53.176 [ main ] - [ INFO  ] [ com.anyu.community.RedisTest : 61 ] - Started RedisTest in 4.612 seconds (JVM running for 6.546)
+2020-04-26 17:14:53.842 [ main ] - [ INFO  ] [ io.lettuce.core.EpollProvider : 68 ] - Starting without optional epoll library
+2020-04-26 17:14:53.844 [ main ] - [ INFO  ] [ io.lettuce.core.KqueueProvider : 70 ] - Starting without optional kqueue library
+2020-04-26 17:14:55.052 [ SpringContextShutdownHook ] - [ INFO  ] [ com.alibaba.druid.pool.DruidDataSource : 2003 ] - {dataSource-0} closing ...

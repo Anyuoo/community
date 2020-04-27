@@ -6,6 +6,7 @@ import com.anyu.community.entity.Page;
 import com.anyu.community.entity.User;
 import com.anyu.community.service.CommentService;
 import com.anyu.community.service.DiscussPostServicce;
+import com.anyu.community.service.LikeService;
 import com.anyu.community.service.UserService;
 import com.anyu.community.utils.CommunityConstant;
 import com.anyu.community.utils.CommunityUtil;
@@ -29,6 +30,8 @@ public class DiscussPostController implements CommunityConstant {
     private UserService userService;
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private LikeService likeService;
 
     /**
      * 添加帖子
@@ -84,25 +87,36 @@ public class DiscussPostController implements CommunityConstant {
         if (comments != null) {
             //得到每条评论
             for (Comment comment : comments) {
-                Map<String, Object> commentVO = new HashMap<>(4);
+                Map<String, Object> commentVO = new HashMap<>(8);
                 //评论
                 commentVO.put("comment", comment);
                 //评论者
                 commentVO.put("observer", userService.findUserById(comment.getUserId()));
+                //赞
+                long commentLikeCount = likeService.countLike(EntityType.COMMENT, comment.getId());
+                commentVO.put("commentLikeCount", commentLikeCount);
+                int commentLikeStatus = user == null ? 0 : likeService.findEntityLikeStatus(EntityType.COMMENT, comment.getId(), user.getId());
+                commentVO.put("commentLikeStatus", commentLikeStatus);
+
                 //回复列表:每条评论的回复
                 int replyCount = commentService.findCommentCount(EntityType.COMMENT, comment.getId());
                 List<Comment> replyList = commentService.findCommentsByEntity(EntityType.COMMENT, comment.getId(), 0, replyCount);
                 List<Map<String, Object>> replyVOList = new ArrayList<>(replyCount);
                 for (Comment reply : replyList) {
-                    Map<String, Object> replyVO = new HashMap<>(4);
+                    Map<String, Object> replyVO = new HashMap<>(8);
                     //回复
                     replyVO.put("reply", reply);
                     //回复者
                     replyVO.put("replier", userService.findUserById(reply.getUserId()));
                     //回复目标
                     User target = reply.getTargetId() == 0 ? null : userService.findUserById(reply.getTargetId());
-                    System.out.println(target);
                     replyVO.put("target", target);
+                    //赞
+                    long replyLikeCount = likeService.countLike(EntityType.COMMENT, reply.getId());
+                    replyVO.put("replyLikeCount", replyLikeCount);
+                    int replyLikeStatus = user == null ? 0 : likeService.findEntityLikeStatus(EntityType.COMMENT, reply.getId(), user.getId());
+                    replyVO.put("replyLikeStatus", replyLikeStatus);
+
                     replyVOList.add(replyVO);
                 }
                 //回复数
@@ -113,6 +127,12 @@ public class DiscussPostController implements CommunityConstant {
             }
             model.addAttribute("commentCount", commentCount);
             model.addAttribute("commentVOList", commentVOList);
+            //赞
+            long likeCount = likeService.countLike(EntityType.POST, discussPostId);
+            model.addAttribute("likeCount", likeCount);
+            int likeStatus = user == null ? 0 : likeService.findEntityLikeStatus(EntityType.POST, discussPostId, user.getId());
+            model.addAttribute("likeStatus", likeStatus);
+
         }
         return PREFIX + "discuss-detail";
     }

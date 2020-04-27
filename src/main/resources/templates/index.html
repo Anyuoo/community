@@ -97,9 +97,9 @@
                                 th:text="${#dates.format(map.post.createTime,'yy-MM-dd HH:mm:ss')}">2019-04-15
                             15:32:18</b>
                             <ul class="d-inline float-right">
-                                <li class="d-inline ml-2" th:text="'赞 '+${map.post.commentCount}">赞 11</li>
+                                <li class="d-inline ml-2" th:text="'赞 '+${map.likeCount}">赞 11</li>
                                 <li class="d-inline ml-2">|</li>
-                                <li class="d-inline ml-2" th:text="|回帖 ${map.post.score}|">回帖 5</li>
+                                <li class="d-inline ml-2" th:text="|回帖 ${map.post.commentCount}|">回帖 5</li>
                             </ul>
                         </div>
                     </div>

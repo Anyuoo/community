@@ -4,7 +4,9 @@ import com.anyu.community.entity.DiscussPost;
 import com.anyu.community.entity.Page;
 import com.anyu.community.entity.User;
 import com.anyu.community.service.DiscussPostServicce;
+import com.anyu.community.service.LikeService;
 import com.anyu.community.service.UserService;
+import com.anyu.community.utils.CommunityConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,11 +19,13 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-public class HomePageController {
+public class HomePageController implements CommunityConstant {
     @Autowired
     private UserService userService;
     @Autowired
     private DiscussPostServicce discussPostServicce;
+    @Autowired
+    private LikeService likeService;
 
     @GetMapping({"/index", "/"})
     public String getIndexPage(Model model, @Validated Page page) {
@@ -36,10 +40,15 @@ public class HomePageController {
                 User user = userService.findUserById(post.getUserId());
                 map.put("post", post);
                 map.put("user", user);
+                //赞
+                long likeCount = likeService.countLike(EntityType.POST, post.getId());
+                map.put("likeCount", likeCount);
                 postAndUser.add(map);
             }
         }
         model.addAttribute("PostAndUser", postAndUser);
+
+
         return "index";
     }
 

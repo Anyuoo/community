@@ -6,6 +6,7 @@ import com.anyu.community.utils.MailClient;
 import com.anyu.community.utils.SensitiveFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.thymeleaf.TemplateEngine;
 
 
@@ -26,6 +27,8 @@ public class BaseClass {
     protected SensitiveFilter sensitiveFilter;
     @Autowired
     protected MailClient mailClient;
+    @Autowired
+    protected RedisTemplate redisTemplate;
     @Autowired
     protected TemplateEngine engine;
     @Value("${community.path.domain}")

@@ -3,8 +3,6 @@ package com.anyu.community.controller.advice;
 import com.anyu.community.utils.CommunityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +13,7 @@ import java.io.PrintWriter;
 /**
  * 统一异常处理
  */
-@ControllerAdvice(annotations = Controller.class)
+//@ControllerAdvice(annotations = Controller.class)
 public class ExceptionAdvice {
     private static final Logger logger = LoggerFactory.getLogger(ExceptionAdvice.class);
 

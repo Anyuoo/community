@@ -38,9 +38,9 @@
                 <div class="media-body">
                     <h5 class="mt-0 text-warning">
                         <span th:utext="${user.username}">nowcoder</span>
-                        <button class="btn btn-info btn-sm float-right mr-5 follow-btn"
-                                th:if="${loginUser.id != user.id}"
-                                th:text="${followStatus == true ? '已关注' : '关注TA'}" type="button">
+                        <button th:class="|btn ${followStatus ? 'btn-secondary' : 'btn-info'} btn-sm float-right mr-5 follow-btn|"
+                                th:if="${loginUser == null || loginUser.id != user.id}"
+                                th:text="${followStatus  ? '已关注' : '关注TA'}" type="button">
                             关注TA
                         </button>
                         <input id="entity-id" th:value="${user.id}" type="hidden">

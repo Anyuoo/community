@@ -6,14 +6,13 @@ import com.anyu.community.utils.CommunityConstant;
 import com.anyu.community.utils.CommunityUtil;
 import com.anyu.community.utils.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Controller
+@RestController
 public class LikeController implements CommunityConstant {
 
     @Autowired
@@ -29,21 +28,12 @@ public class LikeController implements CommunityConstant {
      * @return
      */
     @PostMapping("/like")
-    @ResponseBody
-    public String like(int entityType, int entityId) {
+    public String like(String entityType, int entityId, int entityUserId) {
         User user = hostHolder.getUser();
 
-        EntityType type = null;
-        switch (entityType) {
-            case 1:
-                type = EntityType.POST;
-                break;
-            case 2:
-                type = EntityType.COMMENT;
-                break;
-        }
+        EntityType type = CommunityUtil.getEntityType(entityType);
         //点赞
-        likeService.like(user.getId(), type, entityId);
+        likeService.like(user.getId(), type, entityId, entityUserId);
         //统计点赞数量
         long likeCount = likeService.countLike(type, entityId);
         //状态

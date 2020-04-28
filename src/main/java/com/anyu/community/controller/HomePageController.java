@@ -27,7 +27,7 @@ public class HomePageController implements CommunityConstant {
     @Autowired
     private LikeService likeService;
 
-    @GetMapping({"/index", "/"})
+    @GetMapping({"/index", ""})
     public String getIndexPage(Model model, @Validated Page page) {
         //方法调用前SPRINGmvc自动实例化参数对象，并注入
         page.setPath("/index");
@@ -47,8 +47,6 @@ public class HomePageController implements CommunityConstant {
             }
         }
         model.addAttribute("PostAndUser", postAndUser);
-
-
         return "index";
     }
 

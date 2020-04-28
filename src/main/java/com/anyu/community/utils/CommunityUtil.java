@@ -8,7 +8,7 @@ import org.springframework.util.DigestUtils;
 import java.util.Map;
 import java.util.UUID;
 
-public class CommunityUtil {
+public class CommunityUtil implements CommunityConstant {
     /**
      * 生成随机字符串
      *
@@ -57,5 +57,20 @@ public class CommunityUtil {
 
     public static String getJSONString(int code) {
         return getJSONString(code, null, null);
+    }
+
+    public static EntityType getEntityType(String entityType) {
+        EntityType type = null;
+        switch (entityType) {
+            case "COMMENT":
+                type = EntityType.COMMENT;
+                break;
+            case "POST":
+                type = EntityType.POST;
+                break;
+            default:
+                type = EntityType.USER;
+        }
+        return type;
     }
 }

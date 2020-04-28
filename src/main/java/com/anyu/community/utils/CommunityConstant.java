@@ -18,15 +18,21 @@ public interface CommunityConstant {
      * 帖子类型: POST:帖子 COMMENT:评论
      */
     enum EntityType {
-        POST(1), COMMENT(2);
+        POST("帖子", 1), COMMENT("评论", 2), USER("用户", 3);
+        private final String key;
         private final int value;
 
-        EntityType(int value) {
+        EntityType(String key, int value) {
+            this.key = key;
             this.value = value;
         }
 
         public int value() {
             return this.value;
+        }
+
+        public String key() {
+            return this.key;
         }
     }
 }

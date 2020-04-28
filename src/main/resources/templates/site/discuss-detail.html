@@ -31,7 +31,7 @@
             </h6>
             <!-- 作者 -->
             <div class="media pb-3 border-bottom">
-                <a href="profile.html">
+                <a th:href="@{|/user/profile/${user.id}|}">
                     <img alt="用户头像"
                          class="align-self-start mr-4 rounded-circle user-header"
                          th:src="${user.headerUrl}">
@@ -39,12 +39,12 @@
                 <div class="media-body">
                     <div class="mt-0 text-warning" th:utext="${user.username}">寒江雪</div>
                     <div class="text-muted mt-3">
-                        发布于 <b th:text="${#dates.format(discuss.createTime,'yy-MM-dd HH:mm:ss')}">2019-04-15
-                        15:32:18</b>
+                        发布于 <b th:text="${#dates.format(discuss.createTime,'yy-MM-dd HH:mm:ss')}">
+                        2019-04-15 15:32:18</b>
                         <ul class="d-inline float-right">
                             <li class="d-inline ml-2">
                                 <a class="text-primary" href="javascript:"
-                                   th:onclick="|like(this,1,${discuss.id})|">
+                                   th:onclick="|like(this,'POST',${discuss.id},${discuss.userId})|">
                                     <b th:text="${likeStatus == 1 ? '已赞' : '赞'}">赞</b>(<i th:text="${likeCount}">1</i>)
                                 </a>
                             </li>
@@ -75,7 +75,7 @@
             <ul class="list-unstyled mt-4" th:if="${commentVOList != null}">
                 <!-- 第1条回帖 -->
                 <li class="media pb-3 pt-3 mb-3 border-bottom" th:each="commentVO : ${commentVOList}">
-                    <a href="profile.html">
+                    <a th:href="@{|/user/profile/${commentVO.observer.id}|}">
                         <img alt="用户头像"
                              class="align-self-start mr-4 rounded-circle user-header"
                              th:src="${commentVO.observer.headerUrl}">
@@ -94,7 +94,7 @@
                             <ul class="d-inline float-right">
                                 <li class="d-inline ml-2">
                                     <a class="text-primary" href="javascript:"
-                                       th:onclick="|like(this,2,${commentVO.comment.id})|">
+                                       th:onclick="|like(this,'COMMENT',${commentVO.comment.id},${commentVO.comment.userId})|">
                                         <b th:text="${commentVO.commentLikeStatus == 1 ? '已赞' : '赞'}">赞</b>(<i
                                             th:text="${commentVO.commentLikeCount}">1</i>)
                                     </a>
@@ -123,7 +123,7 @@
                                     <ul class="d-inline float-right">
                                         <li class="d-inline ml-2">
                                             <a class="text-primary" href="javascript:"
-                                               th:onclick="|like(this,2,${replyVO.reply.id})|">
+                                               th:onclick="|like(this,'COMMENT',${replyVO.reply.id},${replyVO.reply.userId})|">
                                                 <b th:text="${replyVO.replyLikeStatus == 1 ? '已赞' : '赞'}">赞</b>(<i
                                                     th:text="${replyVO.replyLikeCount}">1</i>)
                                             </a>

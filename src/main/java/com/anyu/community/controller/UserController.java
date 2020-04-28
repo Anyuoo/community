@@ -2,7 +2,10 @@ package com.anyu.community.controller;
 
 import com.anyu.community.annotation.RequiredLogin;
 import com.anyu.community.entity.User;
+import com.anyu.community.service.FollowService;
+import com.anyu.community.service.LikeService;
 import com.anyu.community.service.UserService;
+import com.anyu.community.utils.CommunityConstant;
 import com.anyu.community.utils.CommunityUtil;
 import com.anyu.community.utils.HostHolder;
 import org.apache.commons.lang3.StringUtils;
@@ -26,12 +29,16 @@ import java.io.IOException;
 @Controller
 @RequestMapping("/user")
 @Validated
-public class UserController {
+public class UserController implements CommunityConstant {
 
     private final static Logger logger = LoggerFactory.getLogger(UserController.class);
     private final String PREFIX = "site/";
     @Autowired
     private UserService userService;
+    @Autowired
+    private LikeService likeService;
+    @Autowired
+    private FollowService followService;
     @Autowired
     private HostHolder hostHolder;
     @Value("${community.path.upload}")
@@ -146,4 +153,32 @@ public class UserController {
         return PREFIX + "setting";
     }
 
+    /**
+     * 个人主页
+     *
+     * @param userId
+     * @param model
+     * @return
+     */
+    @GetMapping("/profile/{userId}")
+    public String profile(@PathVariable("userId") int userId, Model model) {
+        User user = userService.findUserById(userId);
+        if (user == null)
+            throw new RuntimeException("用户不存在！");
+        model.addAttribute("user", user);
+        //赞
+        int userLikeCount = likeService.countUserLike(userId);
+        model.addAttribute("userLikeCount", userLikeCount);
+        //用户粉丝数
+        long followersCount = followService.countFollowers(EntityType.USER, userId);
+        model.addAttribute("followersCount", followersCount);
+        //用户关注数
+        long followeeCount = followService.countFollowee(userId, EntityType.USER);
+        model.addAttribute("followeeCount", followeeCount);
+        //关注状态
+        User hoster = hostHolder.getUser();
+        boolean followStatus = hoster != null && followService.followStatus(hoster.getId(), EntityType.USER, userId);
+        model.addAttribute("followStatus", followStatus);
+        return PREFIX + "profile";
+    }
 }

@@ -67,6 +67,7 @@ public class DiscussPostController implements CommunityConstant {
      */
     @GetMapping("/details/{discussPostId}")
     public String getDiscussPostDetails(@PathVariable("discussPostId") int discussPostId, Model model, Page page) {
+        User holder = hostHolder.getUser();
         //查询帖子内容
         DiscussPost post = discussPostServicce.findDiscussPostById(discussPostId);
         model.addAttribute("discuss", post);
@@ -95,7 +96,7 @@ public class DiscussPostController implements CommunityConstant {
                 //赞
                 long commentLikeCount = likeService.countLike(EntityType.COMMENT, comment.getId());
                 commentVO.put("commentLikeCount", commentLikeCount);
-                int commentLikeStatus = user == null ? 0 : likeService.findEntityLikeStatus(EntityType.COMMENT, comment.getId(), user.getId());
+                int commentLikeStatus = holder == null ? 0 : likeService.findEntityLikeStatus(EntityType.COMMENT, comment.getId(), holder.getId());
                 commentVO.put("commentLikeStatus", commentLikeStatus);
 
                 //回复列表:每条评论的回复
@@ -114,9 +115,8 @@ public class DiscussPostController implements CommunityConstant {
                     //赞
                     long replyLikeCount = likeService.countLike(EntityType.COMMENT, reply.getId());
                     replyVO.put("replyLikeCount", replyLikeCount);
-                    int replyLikeStatus = user == null ? 0 : likeService.findEntityLikeStatus(EntityType.COMMENT, reply.getId(), user.getId());
+                    int replyLikeStatus = holder == null ? 0 : likeService.findEntityLikeStatus(EntityType.COMMENT, reply.getId(), holder.getId());
                     replyVO.put("replyLikeStatus", replyLikeStatus);
-
                     replyVOList.add(replyVO);
                 }
                 //回复数
@@ -130,9 +130,8 @@ public class DiscussPostController implements CommunityConstant {
             //赞
             long likeCount = likeService.countLike(EntityType.POST, discussPostId);
             model.addAttribute("likeCount", likeCount);
-            int likeStatus = user == null ? 0 : likeService.findEntityLikeStatus(EntityType.POST, discussPostId, user.getId());
+            int likeStatus = holder == null ? 0 : likeService.findEntityLikeStatus(EntityType.POST, discussPostId, holder.getId());
             model.addAttribute("likeStatus", likeStatus);
-
         }
         return PREFIX + "discuss-detail";
     }

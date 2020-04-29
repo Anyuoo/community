@@ -31,6 +31,16 @@ spring:
     port: 6379
     host: localhost
 
+  #KafkaProperties
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: community-consumer-group
+      enable-auto-commit: true
+      auto-commit-interval: 3000
+    listener:
+      missing-topics-fatal: false
+
 #mybatis
 mybatis:
   type-aliases-package: com.anyu.community.entity
@@ -44,4 +54,3 @@ community:
   path:
     domain: http://localhost:8080
     upload: f:/community/upload
-

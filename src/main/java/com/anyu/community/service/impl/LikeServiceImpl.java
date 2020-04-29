@@ -1,7 +1,7 @@
 package com.anyu.community.service.impl;
 
 import com.anyu.community.service.LikeService;
-import com.anyu.community.utils.RedisUtil;
+import com.anyu.community.utils.RedisKeyUtil;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.SessionCallback;
@@ -23,8 +23,9 @@ public class LikeServiceImpl extends BaseClass implements LikeService {
         redisTemplate.execute(new SessionCallback() {
             @Override
             public Object execute(RedisOperations operations) throws DataAccessException {
-                String entityLikeKey = RedisUtil.getEntityLikeKey(entityType, entityId);
-                String userLikeKey = RedisUtil.getUserLikeKey(entityUserId);
+                String entityLikeKey = RedisKeyUtil.getEntityLikeKey(entityType, entityId);
+                String userLikeKey = RedisKeyUtil.getEntityLikeKey(EntityType.USER, entityUserId);
+                // String userLikeKey = RedisKeyUtil.getUserLikeKey(entityUserId);
                 Boolean isMember = operations.opsForSet().isMember(entityLikeKey, userId);
                 //事务
                 operations.multi();
@@ -42,14 +43,15 @@ public class LikeServiceImpl extends BaseClass implements LikeService {
 
     @Override
     public int countUserLike(int userId) {
-        String userLikeKey = RedisUtil.getUserLikeKey(userId);
+//        String userLikeKey = RedisKeyUtil.getUserLikeKey(userId);
+        String userLikeKey = RedisKeyUtil.getEntityLikeKey(EntityType.USER, userId);
         Integer userLikeCount = (Integer) redisTemplate.opsForValue().get(userLikeKey);
         return userLikeCount == null ? 0 : userLikeCount.intValue();
     }
 
     @Override
     public long countLike(EntityType entityType, int entityId) {
-        String entityLikeKey = RedisUtil.getEntityLikeKey(entityType, entityId);
+        String entityLikeKey = RedisKeyUtil.getEntityLikeKey(entityType, entityId);
         return redisTemplate.opsForSet().size(entityLikeKey);
     }
 
@@ -61,7 +63,7 @@ public class LikeServiceImpl extends BaseClass implements LikeService {
      */
     @Override
     public int findEntityLikeStatus(EntityType entityType, int entityId, int userId) {
-        String entityLikeKey = RedisUtil.getEntityLikeKey(entityType, entityId);
+        String entityLikeKey = RedisKeyUtil.getEntityLikeKey(entityType, entityId);
         return redisTemplate.opsForSet().isMember(entityLikeKey, userId) ? 1 : 0;
     }
 }

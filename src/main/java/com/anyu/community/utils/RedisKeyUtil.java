@@ -1,11 +1,14 @@
 package com.anyu.community.utils;
 
-public class RedisUtil implements CommunityConstant {
+public class RedisKeyUtil implements CommunityConstant {
     private static final String SPLIT = ":";
     private static final String PREFIX_ENTITY_LIKE = "like:entity";
     private static final String PREFIX_USER_LIKE = "like:user";
     private static final String PREFIX_FOLLOWER = "follower";
     private static final String PREFIX_FOLLOWEE = "followee";
+    private static final String PREFIX_KAPTCHA = "kaptcha";
+    private static final String PREFIX_TICKET = "ticket";
+    private static final String PREFIX_USER = "user";
 
     /**
      * 给某实体点赞key
@@ -24,6 +27,7 @@ public class RedisUtil implements CommunityConstant {
      * @param userId
      * @return
      */
+    @Deprecated
     public static String getUserLikeKey(int userId) {
         return PREFIX_USER_LIKE + SPLIT + userId;
     }
@@ -48,5 +52,35 @@ public class RedisUtil implements CommunityConstant {
      */
     public static String getFolloweeKey(int userId, EntityType entityType) {
         return PREFIX_FOLLOWEE + SPLIT + userId + SPLIT + entityType.name();
+    }
+
+    /**
+     * 获取某一个用户的验证码
+     *
+     * @param owner 用户登录临时凭证
+     * @return key
+     */
+    public static String getKaptchaKey(String owner) {
+        return PREFIX_KAPTCHA + SPLIT + owner;
+    }
+
+    /**
+     * 某个用户登录凭证
+     *
+     * @param ticket
+     * @return
+     */
+    public static String getTicketKey(String ticket) {
+        return PREFIX_TICKET + SPLIT + ticket;
+    }
+
+    /**
+     * 用户的key
+     *
+     * @param userId
+     * @return
+     */
+    public static String getUserKey(int userId) {
+        return PREFIX_USER + SPLIT + userId;
     }
 }

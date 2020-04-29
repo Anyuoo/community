@@ -1,7 +1,7 @@
 package com.anyu.community.service.impl;
 
 import com.anyu.community.service.FollowService;
-import com.anyu.community.utils.RedisUtil;
+import com.anyu.community.utils.RedisKeyUtil;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.SessionCallback;
@@ -15,8 +15,8 @@ public class FollowServiceImpl extends BaseClass implements FollowService {
         redisTemplate.execute(new SessionCallback() {
             @Override
             public Object execute(RedisOperations operations) throws DataAccessException {
-                String followerKey = RedisUtil.getFollowerKey(entityType, entityId);
-                String followeeKey = RedisUtil.getFolloweeKey(userId, entityType);
+                String followerKey = RedisKeyUtil.getFollowerKey(entityType, entityId);
+                String followeeKey = RedisKeyUtil.getFolloweeKey(userId, entityType);
 
                 operations.multi();
                 //某实体的粉丝、关注者
@@ -33,8 +33,8 @@ public class FollowServiceImpl extends BaseClass implements FollowService {
         redisTemplate.execute(new SessionCallback() {
             @Override
             public Object execute(RedisOperations operations) throws DataAccessException {
-                String followerKey = RedisUtil.getFollowerKey(entityType, entityId);
-                String followeeKey = RedisUtil.getFolloweeKey(userId, entityType);
+                String followerKey = RedisKeyUtil.getFollowerKey(entityType, entityId);
+                String followeeKey = RedisKeyUtil.getFolloweeKey(userId, entityType);
 
                 operations.multi();
                 //某实体的粉丝、关注者
@@ -48,21 +48,21 @@ public class FollowServiceImpl extends BaseClass implements FollowService {
 
     @Override
     public boolean followStatus(int userId, EntityType entityType, int entityId) {
-        String followeeKey = RedisUtil.getFolloweeKey(userId, entityType);
+        String followeeKey = RedisKeyUtil.getFolloweeKey(userId, entityType);
         Double score = redisTemplate.opsForZSet().score(followeeKey, entityId);
         return score != null;
     }
 
     @Override
     public long countFollowers(EntityType entityType, int entityId) {
-        String followerKey = RedisUtil.getFollowerKey(entityType, entityId);
+        String followerKey = RedisKeyUtil.getFollowerKey(entityType, entityId);
         Long followerCount = redisTemplate.opsForZSet().size(followerKey);
         return followerCount;
     }
 
     @Override
     public long countFollowee(int userId, EntityType entityType) {
-        String followeeKey = RedisUtil.getFolloweeKey(userId, entityType);
+        String followeeKey = RedisKeyUtil.getFolloweeKey(userId, entityType);
         Long followeeCount = redisTemplate.opsForZSet().size(followeeKey);
         return followeeCount;
     }

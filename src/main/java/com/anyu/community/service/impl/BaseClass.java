@@ -1,6 +1,9 @@
 package com.anyu.community.service.impl;
 
-import com.anyu.community.mapper.*;
+import com.anyu.community.mapper.CommentMapper;
+import com.anyu.community.mapper.DiscussPostMapper;
+import com.anyu.community.mapper.MessageMapper;
+import com.anyu.community.mapper.UserMapper;
 import com.anyu.community.utils.HostHolder;
 import com.anyu.community.utils.MailClient;
 import com.anyu.community.utils.SensitiveFilter;
@@ -15,8 +18,8 @@ public class BaseClass {
     protected UserMapper userMapper;
     @Autowired
     protected DiscussPostMapper discussPostMapper;
-    @Autowired
-    protected LoginTicketMapper loginTicketMapper;
+    //    @Autowired
+//    protected LoginTicketMapper loginTicketMapper;
     @Autowired
     protected CommentMapper commentMapper;
     @Autowired

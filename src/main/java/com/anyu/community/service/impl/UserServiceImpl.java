@@ -5,6 +5,7 @@ import com.anyu.community.entity.User;
 import com.anyu.community.service.UserService;
 import com.anyu.community.utils.CommunityConstant;
 import com.anyu.community.utils.CommunityUtil;
+import com.anyu.community.utils.RedisKeyUtil;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 
@@ -12,6 +13,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserServiceImpl extends BaseClass implements UserService, CommunityConstant {
@@ -29,7 +31,11 @@ public class UserServiceImpl extends BaseClass implements UserService, Community
      */
     @Override
     public User findUserById(int id) {
-        return userMapper.selectById(id);
+        //return userMapper.selectById(id);
+        User user = getUserCache(id);
+        if (user == null)
+            user = initUserCache(id);
+        return user;
     }
 
     /**
@@ -85,11 +91,13 @@ public class UserServiceImpl extends BaseClass implements UserService, Community
      */
     @Override
     public int activation(int userId, String code) {
-        User user = userMapper.selectById(userId);
+        User user = findUserById(userId);
         if (user.getStatus() == 1)
             return ACTIVATION_REPEAT;
         else if (user.getActivationCode().equals(code)) {
             userMapper.updateStatus(userId, 1);
+            //删除缓存
+            clearUserCache(userId);
             return ACTIVATION_SUCCESS;
         } else {
             return ACTIVATION_FAILURE;
@@ -129,7 +137,10 @@ public class UserServiceImpl extends BaseClass implements UserService, Community
         loginTicket.setTicket(ticket);
         loginTicket.setExpired(new Date(System.currentTimeMillis() + expiredSeconds * 1000));
         loginTicket.setStatus(0);
-        loginTicketMapper.insertLoginTicket(loginTicket);
+        //    loginTicketMapper.insertLoginTicket(loginTicket);
+        String ticketKey = RedisKeyUtil.getTicketKey(loginTicket.getTicket());
+        redisTemplate.opsForValue().set(ticketKey, loginTicket);
+
         map.put("ticket", ticket);
         return map;
     }
@@ -141,7 +152,9 @@ public class UserServiceImpl extends BaseClass implements UserService, Community
      */
     @Override
     public void logout(String ticket) {
-        loginTicketMapper.updateStatus(ticket, 1);
+        String ticketKey = RedisKeyUtil.getTicketKey(ticket);
+        LoginTicket loginTicket = (LoginTicket) redisTemplate.opsForValue().get(ticketKey);
+        loginTicket.setStatus(1);
     }
 
     /**
@@ -152,7 +165,9 @@ public class UserServiceImpl extends BaseClass implements UserService, Community
      */
     @Override
     public LoginTicket findLoginTicket(String ticket) {
-        return loginTicketMapper.selectLoginTicketByTicket(ticket);
+        // return loginTicketMapper.selectLoginTicketByTicket(ticket);
+        String ticketKey = RedisKeyUtil.getTicketKey(ticket);
+        return (LoginTicket) redisTemplate.opsForValue().get(ticketKey);
     }
 
     /**
@@ -164,6 +179,8 @@ public class UserServiceImpl extends BaseClass implements UserService, Community
      */
     @Override
     public int updateUserHeaderUrl(int userId, String headerUrl) {
+        //删除缓存
+        clearUserCache(userId);
         return userMapper.updateHeaderUrl(userId, headerUrl);
     }
 
@@ -182,6 +199,74 @@ public class UserServiceImpl extends BaseClass implements UserService, Community
             return false;
         newPassword = CommunityUtil.md5(newPassword + user.getSalt());
         userMapper.updatePassword(user.getId(), newPassword);
+        //删除缓存
+        clearUserCache(user.getId());
         return true;
+    }
+
+    /**
+     * 存入验证码信息
+     *
+     * @param owner 验证码所有者，临时凭证
+     * @param text  验证码信息
+     */
+    @Override
+    public void saveKaptcha(String owner, String text) {
+        String kaptchaKey = RedisKeyUtil.getKaptchaKey(owner);
+        redisTemplate.opsForValue().set(kaptchaKey, text, 60, TimeUnit.SECONDS);
+    }
+
+    /**
+     * 获取二维码信息
+     *
+     * @param owner
+     * @return
+     */
+    @Override
+    public String getKaptcha(String owner) {
+        String kaptchaKey = RedisKeyUtil.getKaptchaKey(owner);
+        return (String) redisTemplate.opsForValue().get(kaptchaKey);
+    }
+
+    /**
+     * 将用户信息存入缓存
+     * 1.优先从缓存中获取用户信息
+     * 2.缓存中没有，再去数据库中查寻
+     * 3.用户信息改变时，删除缓存
+     */
+
+
+    /**
+     * 1.优先从缓存中获取用户信息
+     *
+     * @param userId
+     * @return
+     */
+    private User getUserCache(int userId) {
+        String userKey = RedisKeyUtil.getUserKey(userId);
+        return (User) redisTemplate.opsForValue().get(userKey);
+    }
+
+    /**
+     * 2.缓存中没有，再去数据库中查寻
+     *
+     * @param userId
+     * @return
+     */
+    private User initUserCache(int userId) {
+        User user = userMapper.selectById(userId);
+        String userKey = RedisKeyUtil.getUserKey(userId);
+        redisTemplate.opsForValue().set(userKey, user, 3600, TimeUnit.SECONDS);
+        return user;
+    }
+
+    /**
+     * 3.用户信息改变时，删除缓存
+     *
+     * @param userId
+     */
+    private void clearUserCache(int userId) {
+        String userKey = RedisKeyUtil.getUserKey(userId);
+        redisTemplate.delete(userKey);
     }
 }

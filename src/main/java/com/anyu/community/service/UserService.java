@@ -24,4 +24,8 @@ public interface UserService {
 
     boolean updateUserPassword(String oldPassword, String newPassword);
 
+    void saveKaptcha(String owner, String text);
+
+    String getKaptcha(String owner);
+
 }

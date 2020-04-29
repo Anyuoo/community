@@ -3,6 +3,8 @@ package com.anyu.community.controller;
 import com.anyu.community.entity.User;
 import com.anyu.community.service.UserService;
 import com.anyu.community.utils.CommunityConstant;
+import com.anyu.community.utils.CommunityUtil;
+import com.anyu.community.utils.CookieUtil;
 import com.google.code.kaptcha.Producer;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -21,8 +23,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -54,12 +56,12 @@ public class LoginController implements CommunityConstant {
      * @param code       输入的验证码
      * @param remembered 是否勾选记住我
      * @param model
-     * @param session
+     * @param request
      * @param response
      * @return
      */
     @PostMapping("/login")
-    public String login(@Validated User user, BindingResult result, String code, boolean remembered, Model model, HttpSession session, HttpServletResponse response) {
+    public String login(@Validated User user, BindingResult result, String code, boolean remembered, Model model, HttpServletRequest request, HttpServletResponse response) {
         //输入的user数据不合法
         if (result.hasFieldErrors("username")) {
             model.addAttribute("usernameLoginMsg", result.getFieldError("username").getDefaultMessage());
@@ -70,8 +72,11 @@ public class LoginController implements CommunityConstant {
             return PREFIX + "login";
         }
 
+        //得到临时凭证
+        String kaptchaOwner = CookieUtil.getCookieValue(request, "kaptchaOwner");
         //验证码是否正确
-        String currentCode = (String) session.getAttribute("kaptcha");
+//        String currentCode = (String) session.getAttribute("kaptcha");
+        String currentCode = userService.getKaptcha(kaptchaOwner);
         if (StringUtils.isBlank(currentCode) || !currentCode.equalsIgnoreCase(code)) {
             model.addAttribute("kaptchaMsg", "验证码错误");
             return PREFIX + "login";
@@ -170,16 +175,26 @@ public class LoginController implements CommunityConstant {
     /**
      * 二维码生成和更新
      *
-     * @param session
      * @param response
      */
     @GetMapping("/kaptcha")
-    public void kaptcha(HttpSession session, HttpServletResponse response) {
+    public void kaptcha(HttpServletResponse response) {
         //生成二维码字符和图片
         String text = producer.createText();
         BufferedImage image = producer.createImage(text);
         //将验证码存入session
-        session.setAttribute("kaptcha", text);
+        // session.setAttribute("kaptcha", text);
+
+        //验证码归属
+        String kaptchaOwner = CommunityUtil.generateUUID();
+        Cookie cookie = new Cookie("kaptchaOwner", kaptchaOwner);
+        cookie.setMaxAge(60);
+        cookie.setPath(contextPath);
+        response.addCookie(cookie);
+
+        //存入验证码信息
+        userService.saveKaptcha(kaptchaOwner, text);
+
         //将图片发送至浏览器
         response.setContentType("image/png");
         try {

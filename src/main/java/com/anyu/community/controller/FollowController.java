@@ -1,6 +1,8 @@
 package com.anyu.community.controller;
 
+import com.anyu.community.entity.Event;
 import com.anyu.community.entity.User;
+import com.anyu.community.event.EventProducer;
 import com.anyu.community.service.FollowService;
 import com.anyu.community.utils.CommunityConstant;
 import com.anyu.community.utils.CommunityUtil;
@@ -15,6 +17,8 @@ public class FollowController implements CommunityConstant {
     private FollowService followService;
     @Autowired
     private HostHolder hostHolder;
+    @Autowired
+    private EventProducer eventProducer;
 
     /**
      * 关注，取消关注
@@ -40,6 +44,16 @@ public class FollowController implements CommunityConstant {
             return CommunityUtil.getJSONString(1, "取消关注成功!");
         } else {
             followService.follow(host.getId(), type, entityId);
+            //触发请求
+            Event event = new Event()
+                    .setTopic(TOPIC_TYPE_FOLLOW)
+                    .setUserId(host.getId())
+                    .setEntityType(type.value())
+                    .setEntityId(entityId)
+                    .setEntityTypeUserId(entityId);
+
+            eventProducer.fireEvent(event);
+
             return CommunityUtil.getJSONString(1, "关注成功!");
         }
     }

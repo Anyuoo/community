@@ -1,4 +1,5 @@
 server:
+  port: 8080
   servlet:
     context-path: /community
 
@@ -41,7 +42,7 @@ spring:
     listener:
       missing-topics-fatal: false
 
-#mybatis
+#MybatisProperties
 mybatis:
   type-aliases-package: com.anyu.community.entity
   mapper-locations: classpath:/mapper/*.xml
@@ -54,3 +55,4 @@ community:
   path:
     domain: http://localhost:8080
     upload: f:/community/upload
+

@@ -10,6 +10,13 @@
         user_id,entity_type,entity_id,target_id,content,status,create_time
     </sql>
 
+    <select id="selectCommentById" resultType="Comment">
+        select
+        <include refid="SELECT_LIST"></include>
+        from comment
+        where status=0
+        and id= #{id}
+    </select>
     <select id="selectCommentByEntity" resultType="Comment">
         select
         <include refid="SELECT_LIST"></include>

@@ -44,7 +44,7 @@
                         <ul class="d-inline float-right">
                             <li class="d-inline ml-2">
                                 <a class="text-primary" href="javascript:"
-                                   th:onclick="|like(this,'POST',${discuss.id},${discuss.userId})|">
+                                   th:onclick="|like(this,'POST',${discuss.id},${discuss.userId},${discuss.id})|">
                                     <b th:text="${likeStatus == 1 ? '已赞' : '赞'}">赞</b>(<i th:text="${likeCount}">1</i>)
                                 </a>
                             </li>
@@ -94,7 +94,7 @@
                             <ul class="d-inline float-right">
                                 <li class="d-inline ml-2">
                                     <a class="text-primary" href="javascript:"
-                                       th:onclick="|like(this,'COMMENT',${commentVO.comment.id},${commentVO.comment.userId})|">
+                                       th:onclick="|like(this,'COMMENT',${commentVO.comment.id},${commentVO.comment.userId},${discuss.id})|">
                                         <b th:text="${commentVO.commentLikeStatus == 1 ? '已赞' : '赞'}">赞</b>(<i
                                             th:text="${commentVO.commentLikeCount}">1</i>)
                                     </a>
@@ -123,7 +123,7 @@
                                     <ul class="d-inline float-right">
                                         <li class="d-inline ml-2">
                                             <a class="text-primary" href="javascript:"
-                                               th:onclick="|like(this,'COMMENT',${replyVO.reply.id},${replyVO.reply.userId})|">
+                                               th:onclick="|like(this,'COMMENT',${replyVO.reply.id},${replyVO.reply.userId},${discuss.id})|">
                                                 <b th:text="${replyVO.replyLikeStatus == 1 ? '已赞' : '赞'}">赞</b>(<i
                                                     th:text="${replyVO.replyLikeCount}">1</i>)
                                             </a>

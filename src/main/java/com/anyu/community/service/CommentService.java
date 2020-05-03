@@ -12,4 +12,6 @@ public interface CommentService extends CommunityConstant {
     int findCommentCount(EntityType entityType, int entityId);
 
     int addComment(Comment comment);
+
+    Comment findCommentById(int id);
 }

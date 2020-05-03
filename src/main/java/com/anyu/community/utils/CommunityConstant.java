@@ -35,4 +35,14 @@ public interface CommunityConstant {
             return this.key;
         }
     }
+
+    //主题：关注
+    String TOPIC_TYPE_FOLLOW = "follow";
+    //主题：评论
+    String TOPIC_TYPE_COMMENT = "comment";
+    //主题：点赞
+    String TOPIC_TYPE_LIKE = "like";
+
+    //系统用户
+    int SYSTEM_USER = 1;
 }

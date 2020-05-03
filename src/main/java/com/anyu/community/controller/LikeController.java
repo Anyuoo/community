@@ -1,6 +1,8 @@
 package com.anyu.community.controller;
 
+import com.anyu.community.entity.Event;
 import com.anyu.community.entity.User;
+import com.anyu.community.event.EventProducer;
 import com.anyu.community.service.LikeService;
 import com.anyu.community.utils.CommunityConstant;
 import com.anyu.community.utils.CommunityUtil;
@@ -19,6 +21,8 @@ public class LikeController implements CommunityConstant {
     private LikeService likeService;
     @Autowired
     private HostHolder hostHolder;
+    @Autowired
+    private EventProducer eventProducer;
 
     /**
      * 点赞
@@ -28,7 +32,7 @@ public class LikeController implements CommunityConstant {
      * @return
      */
     @PostMapping("/like")
-    public String like(String entityType, int entityId, int entityUserId) {
+    public String like(String entityType, int entityId, int entityUserId, int postId) {
         User user = hostHolder.getUser();
 
         EntityType type = CommunityUtil.getEntityType(entityType);
@@ -41,6 +45,17 @@ public class LikeController implements CommunityConstant {
         Map<String, Object> map = new HashMap<>(2);
         map.put("likeCount", likeCount);
         map.put("likeStatus", likeStatus);
+        //触发事件
+        if (likeStatus == 1) {
+            Event event = new Event(1)
+                    .setTopic(TOPIC_TYPE_LIKE)
+                    .setEntityType(type.value())
+                    .setEntityId(entityId)
+                    .setEntityTypeUserId(entityUserId)
+                    .setUserId(user.getId())
+                    .setData("postId", postId);
+            eventProducer.fireEvent(event);
+        }
         return CommunityUtil.getJSONString(1, null, map);
     }
 

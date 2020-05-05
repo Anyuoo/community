@@ -53,7 +53,7 @@ public class EventConsumer implements CommunityConstant {
         }
         message.setContent(JSONObject.toJSONString(content));
 
-        messageService.saveMessage(message);
+        messageService.saveLetter(message);
     }
 
 }

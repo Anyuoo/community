@@ -33,7 +33,7 @@ public class HomePageController implements CommunityConstant {
         page.setPath("/index");
         page.setRows(discussPostServicce.findDiscussPostRows(0));
         List<DiscussPost> posts = discussPostServicce.findDiscussPosts(0, page.getOffset(), 10);
-        List<Map<String, Object>> postAndUser = new ArrayList<>();
+        List<Map<String, Object>> postAndUser = new ArrayList<>(page.getLimit());
         if (!posts.isEmpty()) {
             for (DiscussPost post : posts) {
                 Map<String, Object> map = new HashMap<>(2);

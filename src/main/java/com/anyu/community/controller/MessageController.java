@@ -1,22 +1,27 @@
 package com.anyu.community.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.anyu.community.entity.Message;
 import com.anyu.community.entity.Page;
 import com.anyu.community.entity.User;
 import com.anyu.community.service.MessageService;
 import com.anyu.community.service.UserService;
+import com.anyu.community.utils.CommunityConstant;
 import com.anyu.community.utils.CommunityUtil;
 import com.anyu.community.utils.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.util.HtmlUtils;
 
 import java.util.*;
 
 @Controller
-@RequestMapping("/letter")
-public class MessageController {
+public class MessageController implements CommunityConstant {
     private final String PREFIX = "site/";
     @Autowired
     private MessageService messageService;
@@ -32,36 +37,40 @@ public class MessageController {
      * @param page
      * @return
      */
-    @GetMapping("/list")
+    @GetMapping("/letter/list")
     public String getLettersList(Model model, Page page) {
         //获取当前用户
-        User user = hostHolder.getUser();
+        User holder = hostHolder.getUser();
         //设置分页信息
-        int conversationsCount = messageService.countConversations(user.getId());
+        int conversationsCount = messageService.countConversations(holder.getId());
         page.setRows(conversationsCount);
         page.setPath("/letter/list");
 
-        List<Message> conversationList = messageService.listConversations(user.getId(), page.getOffset(), page.getLimit());
+        List<Message> conversationList = messageService.listConversations(holder.getId(), page.getOffset(), page.getLimit());
         List<Map<String, Object>> msgVOList = new ArrayList<>(conversationsCount);
         for (Message conversion : conversationList) {
             Map<String, Object> msgVO = new HashMap<>(4);
             //信
             msgVO.put("conversion", conversion);
             //发信人
-            int targetId = user.getId() == conversion.getFromId() ? conversion.getToId() : conversion.getFromId();
+            int targetId = holder.getId() == conversion.getFromId() ? conversion.getToId() : conversion.getFromId();
             User target = userService.findUserById(targetId);
             msgVO.put("target", target);
             //对话数量
             int lettersCount = messageService.countLetters(conversion.getConversationId());
             msgVO.put("lettersCount", lettersCount);
             //未读信息数量
-            int unreadLettersCount = messageService.countUnreadLetters(user.getId(), conversion.getConversationId());
+            int unreadLettersCount = messageService.countUnreadLetters(holder.getId(), conversion.getConversationId());
             msgVO.put("unreadLettersCount", unreadLettersCount);
             msgVOList.add(msgVO);
         }
         model.addAttribute("msgVOList", msgVOList);
-        int unreadMessagesCount = messageService.countUnreadLetters(user.getId(), null);
+        //未读消息数量
+        int unreadMessagesCount = messageService.countUnreadLetters(holder.getId(), null);
         model.addAttribute("unreadMsgCount", unreadMessagesCount);
+        int unreadNoticeCount = messageService.countUnreadNotices(holder.getId(), null);
+        model.addAttribute("unreadNoticeCount", unreadNoticeCount);
+
         return PREFIX + "letter";
     }
 
@@ -73,10 +82,10 @@ public class MessageController {
      * @param page
      * @return
      */
-    @GetMapping("/detail/{conversationId}")
+    @GetMapping("/letter/detail/{conversationId}")
     public String detail(@PathVariable("conversationId") String conversationId, Model model, Page page) {
         //获取当前用户
-        User user = hostHolder.getUser();
+        User holder = hostHolder.getUser();
         //设置分页信息
         int lettersCount = messageService.countLetters(conversationId);
         page.setRows(lettersCount);
@@ -100,10 +109,10 @@ public class MessageController {
         }
         model.addAttribute("msgVOList", msgVOList);
         //将消息设为已读
-        int unreadCount = messageService.countUnreadLetters(user.getId(), conversationId);
+        int unreadCount = messageService.countUnreadLetters(holder.getId(), conversationId);
 
         if (!getLettersId(conversationList, unreadCount).isEmpty())
-            messageService.readMessage(getLettersId(conversationList, unreadCount), 1);
+            messageService.readLetter(getLettersId(conversationList, unreadCount));
         return PREFIX + "letter-detail";
     }
 
@@ -147,7 +156,7 @@ public class MessageController {
      * @param toUsername
      * @return
      */
-    @PostMapping("/send")
+    @PostMapping("/letter/send")
     @ResponseBody
     public String sendMessage(String content, String toUsername) {
         if (content == null)
@@ -167,7 +176,7 @@ public class MessageController {
         message.setCreateTime(new Date());
         String conversationId = fromUser.getId() > toUser.getId() ? toUser.getId() + "_" + fromUser.getId() : fromUser.getId() + "_" + toUser.getId();
         message.setConversationId(conversationId);
-        messageService.saveMessage(message);
+        messageService.saveLetter(message);
         return CommunityUtil.getJSONString(1, "发送成功！");
     }
 
@@ -178,17 +187,120 @@ public class MessageController {
      * @param id
      * @return
      */
-    @PostMapping("/delete")
+    @PostMapping("/letter/delete")
     @ResponseBody
     public String deleteMessage(int id) {
         if (id == 0)
             return CommunityUtil.getJSONString(403, "删除失败！");
         List<Integer> ids = new ArrayList<>(1);
         ids.add(id);
-        System.out.println(id);
-        messageService.deleteMessage(ids, 2);
+        messageService.deleteMessage(ids);
         return CommunityUtil.getJSONString(1, "删除成功！");
     }
 
+    /**
+     * 系统消息列表
+     *
+     * @param model
+     * @return
+     */
+    @GetMapping("/notice/list")
+    public String getNoticeList(Model model) {
+        User holder = hostHolder.getUser();
 
+        //评论
+        Map<String, Object> noticeVO = null;
+        Message commentNotice = messageService.findLatestNotice(holder.getId(), TOPIC_TYPE_COMMENT);
+        noticeVO = formatNoticeVO(commentNotice, holder, TOPIC_TYPE_COMMENT, false);
+        model.addAttribute("commentNoticeVO", noticeVO);
+        //关注
+        Message followNotice = messageService.findLatestNotice(holder.getId(), TOPIC_TYPE_FOLLOW);
+        noticeVO = formatNoticeVO(followNotice, holder, TOPIC_TYPE_FOLLOW, false);
+        model.addAttribute("followNoticeVO", noticeVO);
+
+        //赞
+        Message likeNotice = messageService.findLatestNotice(holder.getId(), TOPIC_TYPE_LIKE);
+        noticeVO = formatNoticeVO(likeNotice, holder, TOPIC_TYPE_LIKE, false);
+        model.addAttribute("likeNoticeVO", noticeVO);
+
+        //未读消息数量
+        int unreadLetterCount = messageService.countUnreadLetters(holder.getId(), null);
+        model.addAttribute("unreadLetterCount", unreadLetterCount);
+        int unreadNoticeCount = messageService.countUnreadNotices(holder.getId(), null);
+        model.addAttribute("unreadNoticeCount", unreadNoticeCount);
+
+        return PREFIX + "notice";
+    }
+
+    /**
+     * 组装前端通知需要显示的数据
+     *
+     * @param notice    某个具体通知
+     * @param holder    当前用户
+     * @param topicType 通知主题
+     * @param isDetail  是否为详情页面
+     * @return
+     */
+    private Map<String, Object> formatNoticeVO(Message notice, User holder, String topicType, boolean isDetail) {
+        Map<String, Object> noticeVO = new HashMap<>(8);
+        //前端根据notice是否为null，显示样式，map中必须存有notice字段
+        noticeVO.put("notice", notice);
+        if (notice != null) {
+            var content = HtmlUtils.htmlUnescape(notice.getContent());
+            HashMap<String, Object> data = JSONObject.parseObject(content, HashMap.class);
+            noticeVO.put("user", userService.findUserById((Integer) data.get("userId")));
+            noticeVO.put("entityType", data.get("entityType"));
+            noticeVO.put("entityId", data.get("entityId"));
+            //不是关注，关注只能关注人，没有postId字段
+            if (!TOPIC_TYPE_FOLLOW.equals(topicType)) {
+                noticeVO.put("postId", data.get("postId"));
+            }
+            if (!isDetail) {
+                //已读数量
+                int count = messageService.countNotices(holder.getId(), topicType);
+                noticeVO.put("count", count);
+                //未读数量
+                int unreadCount = messageService.countUnreadNotices(holder.getId(), topicType);
+                noticeVO.put("unreadCount", unreadCount);
+            } else {
+                //通知作者
+                noticeVO.put("fromUser", userService.findUserById(notice.getFromId()));
+            }
+        }
+        return noticeVO;
+    }
+
+    /**
+     * 系统信息详情页面
+     *
+     * @param topic
+     * @param model
+     * @param page
+     * @return
+     */
+    @GetMapping("/notice/detail/{topic}")
+    public String getNoticeDetail(@PathVariable("topic") String topic, Model model, Page page) {
+        User holder = hostHolder.getUser();
+
+        //分页设置
+        page.setPath("/notice/detail/" + topic);
+        page.setLimit(5);
+        page.setRows(messageService.countNotices(holder.getId(), topic));
+
+        List<Message> noticesList = messageService.listNotices(holder.getId(), topic, page.getOffset(), page.getLimit());
+        List<Map<String, Object>> noticeVOList = new ArrayList<>(page.getLimit());
+        for (Message notice : noticesList) {
+            Map<String, Object> noticeVO = null;
+            noticeVO = formatNoticeVO(notice, holder, topic, true);
+            noticeVOList.add(noticeVO);
+        }
+        model.addAttribute("noticeVOList", noticeVOList);
+
+        //设置已读
+        List<Integer> ids = getLettersId(noticesList, messageService.countUnreadNotices(holder.getId(), topic));
+        if (!ids.isEmpty()) {
+            messageService.readLetter(ids);
+        }
+        return PREFIX + "notice-detail";
+    }
 }

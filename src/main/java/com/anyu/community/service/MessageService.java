@@ -22,11 +22,23 @@ public interface MessageService {
     int countUnreadLetters(int userId, String conversationId);
 
     //添加私信
-    int saveMessage(Message message);
+    int saveLetter(Message message);
 
     //已读信息状态
-    int readMessage(List<Integer> ids, int status);
+    int readLetter(List<Integer> ids);
 
     //删除信息
-    int deleteMessage(List<Integer> ids, int status);
+    int deleteMessage(List<Integer> ids);
+
+    //查询某用户最新的通知
+    Message findLatestNotice(int userId, String topic);
+
+    //查询某用户的通知数量
+    int countNotices(int userId, String topic);
+
+    //查询某用户未读通知数量
+    int countUnreadNotices(int userId, String topic);
+
+    //查询某用户所有通知
+    List<Message> listNotices(int userId, String topic, int offset, int limit);
 }
